@@ -44,7 +44,7 @@ class CrimeFragment : Fragment() {
                 count: Int,
                 after: Int
             ) {
-                //not implemented
+                // not implemented
             }
 
             override fun onTextChanged(
@@ -57,7 +57,7 @@ class CrimeFragment : Fragment() {
             }
 
             override fun afterTextChanged(sequence: Editable?) {
-                //not implemented
+                // not implemented
             }
         }
 

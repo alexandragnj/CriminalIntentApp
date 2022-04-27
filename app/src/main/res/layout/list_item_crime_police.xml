@@ -21,13 +21,13 @@
             android:id="@+id/crime_title_police"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/crime_title_forList" />
+            tools:text="Crime Title" />
 
         <TextView
             android:id="@+id/crime_date_police"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/crime_date_forList" />
+            tools:text="Crime Date" />
 
     </LinearLayout>
 

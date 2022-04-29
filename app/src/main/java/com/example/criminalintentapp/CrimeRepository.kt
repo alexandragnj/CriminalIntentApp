@@ -1,33 +1,23 @@
 package com.example.criminalintentapp
 
-import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.room.Room
-import com.example.criminalintentapp.database.CrimeDatabase
+import com.example.criminalintentapp.database.CrimeDao
 import java.util.UUID
 
-class CrimeRepository private constructor(context: Context) {
-
-    private val database: CrimeDatabase = Room.databaseBuilder(
-        context.applicationContext,
-        CrimeDatabase::class.java,
-        DATABASE_NAME
-    ).build()
-
-    private val crimeDao = database.crimeDao()
+class CrimeRepository private constructor(private val crimeDao: CrimeDao) {
 
     fun getCrimes(): LiveData<List<Crime>> = crimeDao.getCrimes()
 
     fun getCrime(id: UUID): LiveData<Crime?> = crimeDao.getCrime(id)
 
     companion object {
-        private const val DATABASE_NAME = "crime-database"
+        const val DATABASE_NAME = "crime-database"
 
         private var INSTANCE: CrimeRepository? = null
 
-        fun initialize(context: Context) {
+        fun initialize(crimeDao: CrimeDao) {
             if (INSTANCE == null) {
-                INSTANCE = CrimeRepository(context)
+                INSTANCE = CrimeRepository(crimeDao)
             }
         }
 

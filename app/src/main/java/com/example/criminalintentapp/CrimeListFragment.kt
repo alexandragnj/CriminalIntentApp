@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
 
     private lateinit var crimeRecyclerView: RecyclerView
-    private var adapter: CrimeAdapter? = CrimeAdapter(emptyList())
+    private var adapter: CrimeAdapter = CrimeAdapter(emptyList())
 
     private val crimeListViewModel: CrimeListViewModel by lazy {
         ViewModelProvider(this).get(CrimeListViewModel::class.java)
@@ -23,10 +23,8 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         crimeListViewModel.crimesListLiveData.observe(
             viewLifecycleOwner,
             Observer { crimes ->
-                crimes?.let {
-                    Log.i(TAG, "Got crimes ${crimes.size}")
-                    setupUI(view, crimes)
-                }
+                Log.i(TAG, "Got crimes ${crimes.size}")
+                setupUI(view, crimes)
             }
         )
     }

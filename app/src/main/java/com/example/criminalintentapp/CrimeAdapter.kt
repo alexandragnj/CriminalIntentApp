@@ -5,13 +5,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
 class CrimeAdapter(var crimes: List<Crime>) :
     RecyclerView.Adapter<CrimeAdapter.CrimeHolder>() {
 
-    class CrimeHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    private lateinit var listener: OnItemClickListener
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+    }
+
+    fun setOnClickListener(listener: OnItemClickListener) {
+
+        this.listener = listener
+    }
+
+    class CrimeHolder(itemView: View, listener: OnItemClickListener) :
+        RecyclerView.ViewHolder(itemView) {
 
         private lateinit var crime: Crime
 
@@ -20,7 +31,9 @@ class CrimeAdapter(var crimes: List<Crime>) :
         private val solvedImageView: ImageView = itemView.findViewById(R.id.crime_solved)
 
         init {
-            itemView.setOnClickListener(this)
+            itemView.setOnClickListener {
+                listener.onItemClick(adapterPosition)
+            }
         }
 
         fun bind(crime: Crime) {
@@ -33,18 +46,12 @@ class CrimeAdapter(var crimes: List<Crime>) :
                 View.GONE
             }
         }
-
-        override fun onClick(v: View?) {
-            if (v != null) {
-                Toast.makeText(v.context, "${crime.title} pressed", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeHolder {
         val v: View =
             LayoutInflater.from(parent.context).inflate(R.layout.list_item_crime, parent, false)
-        return CrimeHolder(v)
+        return CrimeHolder(v, listener)
     }
 
     override fun onBindViewHolder(holder: CrimeHolder, position: Int) {

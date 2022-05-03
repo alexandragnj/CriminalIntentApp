@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,17 +35,18 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        emptyListTextView = view.findViewById(R.id.empty_list_text_view) as TextView
+
         crimeListViewModel.crimesListLiveData.observe(
-            viewLifecycleOwner,
-            Observer { crimes ->
-                if (crimes.isEmpty()) {
-                    emptyListTextView.isVisible = true
-                    emptyListTextView.setText(R.string.empty_list)
-                }
-                Log.i(TAG, "Got crimes ${crimes.size}")
-                setupUI(view, crimes)
+            viewLifecycleOwner
+        ) { crimes ->
+            if (crimes.isEmpty()) {
+                emptyListTextView.isVisible = true
+                emptyListTextView.setText(R.string.empty_list)
             }
-        )
+            Log.i(TAG, "Got crimes ${crimes.size}")
+            setupUI(view, crimes)
+        }
     }
 
     override fun onDetach() {
@@ -56,7 +56,6 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
 
     private fun setupUI(view: View, crimes: List<Crime>) {
         crimeRecyclerView = view.findViewById(R.id.crime_recycler_view) as RecyclerView
-        emptyListTextView = view.findViewById(R.id.empty_list_text_view) as TextView
 
         crimeRecyclerView.layoutManager = LinearLayoutManager(context)
 

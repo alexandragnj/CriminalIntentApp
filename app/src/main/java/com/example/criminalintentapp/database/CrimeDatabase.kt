@@ -8,7 +8,7 @@ import androidx.room.Room
 import com.example.criminalintentapp.Crime
 import com.example.criminalintentapp.CrimeRepository
 
-@Database(entities = [Crime::class], version = 1)
+@Database(entities = [Crime::class], version = 1, exportSchema = false)
 @TypeConverters(CrimeTypeConverters::class)
 abstract class CrimeDatabase : RoomDatabase() {
 

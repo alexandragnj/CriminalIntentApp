@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import java.text.DateFormat
 
 class CrimeAdapter(var crimes: List<Crime>) :
     RecyclerView.Adapter<CrimeAdapter.CrimeHolder>() {
@@ -26,7 +27,7 @@ class CrimeAdapter(var crimes: List<Crime>) :
         fun bind(crime: Crime) {
             this.crime = crime
             titleTextView.text = this.crime.title
-            dateTextView.text = this.crime.date.toString()
+            dateTextView.text = DateFormat.getDateInstance(DateFormat.FULL).format(crime.date)
             solvedImageView.visibility = if (crime.isSolved) {
                 View.VISIBLE
             } else {

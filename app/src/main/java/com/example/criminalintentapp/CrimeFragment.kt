@@ -3,6 +3,7 @@ package com.example.criminalintentapp
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +11,11 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import java.util.UUID
 
-class CrimeFragment : Fragment() {
+class CrimeFragment : Fragment(), FragmentResultListener {
 
     private var crime: Crime = Crime()
     private lateinit var titleField: EditText
@@ -44,6 +46,12 @@ class CrimeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        childFragmentManager.setFragmentResultListener(
+            DIALOG_DATE,
+            viewLifecycleOwner,
+            this
+        )
         crimeDetailViewModel.crimeLiveData.observe(
             viewLifecycleOwner
         ) { crime ->
@@ -88,6 +96,12 @@ class CrimeFragment : Fragment() {
                 crime.isSolved = isChecked
             }
         }
+
+        dateButton.setOnClickListener {
+            DatePickerFragment.newInstance(crime.date, DIALOG_DATE).apply {
+                show(this@CrimeFragment.childFragmentManager, DIALOG_DATE)
+            }
+        }
     }
 
     override fun onStop() {
@@ -97,10 +111,18 @@ class CrimeFragment : Fragment() {
 
     private fun updateUI() {
         titleField.setText(crime.title)
-        dateButton.text = crime.date.toString()
         solvedCheckBox.apply {
             isChecked = crime.isSolved
             jumpDrawablesToCurrentState()
+        }
+    }
+
+    override fun onFragmentResult(requestCode: String, result: Bundle) {
+        when (requestCode) {
+            DIALOG_DATE -> {
+                Log.d(TAG, "RECEIVED RESULT FOR $requestCode")
+                crime.date = DatePickerFragment.getSelectedDate(result)
+            }
         }
     }
 
@@ -112,6 +134,8 @@ class CrimeFragment : Fragment() {
 
     companion object {
         private const val ARG_CRIME_ID = "crime_id"
+        private const val DIALOG_DATE = "DialogDate"
+        private const val TAG = "CrimeFragment"
 
         fun newInstance(crimeId: UUID): CrimeFragment {
             val args = Bundle().apply {

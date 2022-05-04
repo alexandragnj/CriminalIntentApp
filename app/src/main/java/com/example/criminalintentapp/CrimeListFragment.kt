@@ -57,7 +57,6 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
     private fun bindView(view: View) {
         crimeRecyclerView = view.findViewById(R.id.crime_recycler_view) as RecyclerView
         emptyListTextView = view.findViewById(R.id.empty_list_text_view) as TextView
-
     }
 
     private fun setupUI(crimes: List<Crime>) {

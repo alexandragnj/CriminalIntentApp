@@ -35,7 +35,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        emptyListTextView = view.findViewById(R.id.empty_list_text_view) as TextView
+        bindView(view)
 
         crimeListViewModel.crimesListLiveData.observe(
             viewLifecycleOwner
@@ -45,7 +45,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
                 emptyListTextView.setText(R.string.empty_list)
             }
             Log.i(TAG, "Got crimes ${crimes.size}")
-            setupUI(view, crimes)
+            setupUI(crimes)
         }
     }
 
@@ -54,9 +54,13 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         callbacks = null
     }
 
-    private fun setupUI(view: View, crimes: List<Crime>) {
+    private fun bindView(view: View) {
         crimeRecyclerView = view.findViewById(R.id.crime_recycler_view) as RecyclerView
+        emptyListTextView = view.findViewById(R.id.empty_list_text_view) as TextView
 
+    }
+
+    private fun setupUI(crimes: List<Crime>) {
         crimeRecyclerView.layoutManager = LinearLayoutManager(context)
 
         adapter = CrimeAdapter(crimes)

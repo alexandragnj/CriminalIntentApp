@@ -10,5 +10,4 @@ class CriminalIntentApplication : Application() {
         val crimeDao = CrimeDatabase.getDatabase(this).crimeDao()
         CrimeRepository.initialize(crimeDao)
     }
-
 }

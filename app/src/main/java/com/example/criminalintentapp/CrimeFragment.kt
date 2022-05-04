@@ -48,7 +48,7 @@ class CrimeFragment : Fragment(), FragmentResultListener {
         super.onViewCreated(view, savedInstanceState)
 
         childFragmentManager.setFragmentResultListener(
-            DIALOG_DATE,
+            REQUEST_DATE,
             viewLifecycleOwner,
             this
         )
@@ -98,8 +98,8 @@ class CrimeFragment : Fragment(), FragmentResultListener {
         }
 
         dateButton.setOnClickListener {
-            DatePickerFragment.newInstance(crime.date, DIALOG_DATE).apply {
-                show(this@CrimeFragment.childFragmentManager, DIALOG_DATE)
+            DatePickerFragment.newInstance(crime.date, REQUEST_DATE).apply {
+                show(this@CrimeFragment.childFragmentManager, REQUEST_DATE)
             }
         }
     }
@@ -119,7 +119,7 @@ class CrimeFragment : Fragment(), FragmentResultListener {
 
     override fun onFragmentResult(requestCode: String, result: Bundle) {
         when (requestCode) {
-            DIALOG_DATE -> {
+            REQUEST_DATE -> {
                 Log.d(TAG, "RECEIVED RESULT FOR $requestCode")
                 crime.date = DatePickerFragment.getSelectedDate(result)
             }
@@ -134,7 +134,7 @@ class CrimeFragment : Fragment(), FragmentResultListener {
 
     companion object {
         private const val ARG_CRIME_ID = "crime_id"
-        private const val DIALOG_DATE = "DialogDate"
+        private const val REQUEST_DATE = "DialogDate"
         private const val TAG = "CrimeFragment"
 
         fun newInstance(crimeId: UUID): CrimeFragment {

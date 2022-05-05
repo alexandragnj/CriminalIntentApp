@@ -18,7 +18,7 @@ import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment
 import com.example.criminalintentapp.R
 import java.util.UUID
 
-class CrimeFragment : Fragment(), FragmentResultListener {
+class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener {
 
     private var crime: Crime = Crime()
     private lateinit var titleField: EditText
@@ -28,23 +28,17 @@ class CrimeFragment : Fragment(), FragmentResultListener {
         ViewModelProvider(this).get(CrimeDetailViewModel::class.java)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_crime, container, false)
-
+    override fun onStart() {
+        super.onStart()
         val crimeId: UUID = arguments?.getSerializable(ARG_CRIME_ID) as UUID
         crimeDetailViewModel.loadCrime(crimeId)
-
-        bindViews(view)
-
-        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bindViews(view)
+        setTextWatcher()
+        setClickListeners()
 
         childFragmentManager.setFragmentResultListener(
             REQUEST_DATE,
@@ -61,9 +55,12 @@ class CrimeFragment : Fragment(), FragmentResultListener {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onStop() {
+        super.onStop()
+        crimeDetailViewModel.saveCrime(crime)
+    }
 
+    private fun setTextWatcher() {
         val titleWatcher = object : TextWatcher {
             override fun beforeTextChanged(
                 sequence: CharSequence?,
@@ -89,7 +86,9 @@ class CrimeFragment : Fragment(), FragmentResultListener {
         }
 
         titleField.addTextChangedListener(titleWatcher)
+    }
 
+    private fun setClickListeners() {
         solvedCheckBox.apply {
             setOnCheckedChangeListener { _, isChecked ->
                 crime.isSolved = isChecked
@@ -101,11 +100,6 @@ class CrimeFragment : Fragment(), FragmentResultListener {
                 show(this@CrimeFragment.childFragmentManager, REQUEST_DATE)
             }
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        crimeDetailViewModel.saveCrime(crime)
     }
 
     private fun updateUI() {

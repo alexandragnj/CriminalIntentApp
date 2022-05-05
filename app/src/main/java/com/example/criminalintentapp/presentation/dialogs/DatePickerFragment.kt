@@ -1,4 +1,4 @@
-package com.example.criminalintentapp
+package com.example.criminalintentapp.presentation.dialogs
 
 import android.app.DatePickerDialog
 import android.app.Dialog

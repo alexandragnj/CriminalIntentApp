@@ -1,9 +1,11 @@
-package com.example.criminalintentapp
+package com.example.criminalintentapp.presentation.fragments.crime_detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.example.criminalintentapp.data.database.Crime
+import com.example.criminalintentapp.data.repository.CrimeRepository
 import java.util.UUID
 
 class CrimeDetailViewModel : ViewModel() {

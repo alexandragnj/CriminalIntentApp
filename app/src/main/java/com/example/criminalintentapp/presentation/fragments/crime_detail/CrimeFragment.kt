@@ -1,4 +1,4 @@
-package com.example.criminalintentapp
+package com.example.criminalintentapp.presentation.fragments.crime_detail
 
 import android.os.Bundle
 import android.text.Editable
@@ -13,6 +13,9 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.ViewModelProvider
+import com.example.criminalintentapp.data.database.Crime
+import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment
+import com.example.criminalintentapp.R
 import java.util.UUID
 
 class CrimeFragment : Fragment(), FragmentResultListener {
@@ -32,14 +35,10 @@ class CrimeFragment : Fragment(), FragmentResultListener {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_crime, container, false)
 
-        bindViews(view)
-
-        dateButton.apply {
-            text = crime.date.toString()
-        }
-
         val crimeId: UUID = arguments?.getSerializable(ARG_CRIME_ID) as UUID
         crimeDetailViewModel.loadCrime(crimeId)
+
+        bindViews(view)
 
         return view
     }
@@ -111,6 +110,9 @@ class CrimeFragment : Fragment(), FragmentResultListener {
 
     private fun updateUI() {
         titleField.setText(crime.title)
+        dateButton.apply {
+            text = crime.date.toString()
+        }
         solvedCheckBox.apply {
             isChecked = crime.isSolved
             jumpDrawablesToCurrentState()

@@ -1,7 +1,8 @@
-package com.example.criminalintentapp
+package com.example.criminalintentapp.data.repository
 
 import androidx.lifecycle.LiveData
-import com.example.criminalintentapp.database.CrimeDao
+import com.example.criminalintentapp.data.database.Crime
+import com.example.criminalintentapp.data.database.CrimeDao
 import java.util.UUID
 import java.util.concurrent.Executors
 

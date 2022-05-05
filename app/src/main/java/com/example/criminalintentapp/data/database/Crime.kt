@@ -1,4 +1,4 @@
-package com.example.criminalintentapp
+package com.example.criminalintentapp.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

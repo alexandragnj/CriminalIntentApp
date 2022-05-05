@@ -1,8 +1,9 @@
-package com.example.criminalintentapp
+package com.example.criminalintentapp.presentation.fragments.crime_detail
 
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +11,14 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.ViewModelProvider
+import com.example.criminalintentapp.data.database.Crime
+import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment
+import com.example.criminalintentapp.R
 import java.util.UUID
 
-class CrimeFragment : Fragment() {
+class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener {
 
     private var crime: Crime = Crime()
     private lateinit var titleField: EditText
@@ -23,27 +28,23 @@ class CrimeFragment : Fragment() {
         ViewModelProvider(this).get(CrimeDetailViewModel::class.java)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_crime, container, false)
-
-        bindViews(view)
-
-        dateButton.apply {
-            text = crime.date.toString()
-        }
-
+    override fun onStart() {
+        super.onStart()
         val crimeId: UUID = arguments?.getSerializable(ARG_CRIME_ID) as UUID
         crimeDetailViewModel.loadCrime(crimeId)
-
-        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bindViews(view)
+        setTextWatcher()
+        setClickListeners()
+
+        childFragmentManager.setFragmentResultListener(
+            REQUEST_DATE,
+            viewLifecycleOwner,
+            this
+        )
         crimeDetailViewModel.crimeLiveData.observe(
             viewLifecycleOwner
         ) { crime ->
@@ -54,9 +55,12 @@ class CrimeFragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onStop() {
+        super.onStop()
+        crimeDetailViewModel.saveCrime(crime)
+    }
 
+    private fun setTextWatcher() {
         val titleWatcher = object : TextWatcher {
             override fun beforeTextChanged(
                 sequence: CharSequence?,
@@ -82,25 +86,39 @@ class CrimeFragment : Fragment() {
         }
 
         titleField.addTextChangedListener(titleWatcher)
+    }
 
+    private fun setClickListeners() {
         solvedCheckBox.apply {
             setOnCheckedChangeListener { _, isChecked ->
                 crime.isSolved = isChecked
             }
         }
-    }
 
-    override fun onStop() {
-        super.onStop()
-        crimeDetailViewModel.saveCrime(crime)
+        dateButton.setOnClickListener {
+            DatePickerFragment.newInstance(crime.date, REQUEST_DATE).apply {
+                show(this@CrimeFragment.childFragmentManager, REQUEST_DATE)
+            }
+        }
     }
 
     private fun updateUI() {
         titleField.setText(crime.title)
-        dateButton.text = crime.date.toString()
+        dateButton.apply {
+            text = crime.date.toString()
+        }
         solvedCheckBox.apply {
             isChecked = crime.isSolved
             jumpDrawablesToCurrentState()
+        }
+    }
+
+    override fun onFragmentResult(requestCode: String, result: Bundle) {
+        when (requestCode) {
+            REQUEST_DATE -> {
+                Log.d(TAG, "RECEIVED RESULT FOR $requestCode")
+                crime.date = DatePickerFragment.getSelectedDate(result)
+            }
         }
     }
 
@@ -112,6 +130,8 @@ class CrimeFragment : Fragment() {
 
     companion object {
         private const val ARG_CRIME_ID = "crime_id"
+        private const val REQUEST_DATE = "DialogDate"
+        private const val TAG = "CrimeFragment"
 
         fun newInstance(crimeId: UUID): CrimeFragment {
             val args = Bundle().apply {

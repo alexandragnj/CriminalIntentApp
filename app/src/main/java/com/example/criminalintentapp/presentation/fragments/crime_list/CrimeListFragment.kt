@@ -1,4 +1,4 @@
-package com.example.criminalintentapp
+package com.example.criminalintentapp.presentation.fragments.crime_list
 
 import android.content.Context
 import android.os.Bundle
@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.criminalintentapp.data.database.Crime
+import com.example.criminalintentapp.R
 import java.util.UUID
 
 class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
@@ -57,7 +59,6 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
     private fun bindView(view: View) {
         crimeRecyclerView = view.findViewById(R.id.crime_recycler_view) as RecyclerView
         emptyListTextView = view.findViewById(R.id.empty_list_text_view) as TextView
-
     }
 
     private fun setupUI(crimes: List<Crime>) {

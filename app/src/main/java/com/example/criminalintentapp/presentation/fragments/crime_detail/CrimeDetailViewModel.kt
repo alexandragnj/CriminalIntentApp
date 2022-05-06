@@ -11,14 +11,14 @@ import java.util.UUID
 class CrimeDetailViewModel : ViewModel() {
 
     private val crimeRepository = CrimeRepository.get()
-    private val crimeIdLiveData = MutableLiveData<UUID>()
+    private val crimeIdLiveData = MutableLiveData<Int>()
 
     val crimeLiveData: LiveData<Crime?> =
         Transformations.switchMap(crimeIdLiveData) { crimeId ->
             crimeRepository.getCrime(crimeId)
         }
 
-    fun loadCrime(crimeId: UUID) {
+    fun loadCrime(crimeId: Int) {
         crimeIdLiveData.value = crimeId
     }
 

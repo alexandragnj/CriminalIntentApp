@@ -30,7 +30,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
 
     override fun onStart() {
         super.onStart()
-        val crimeId: UUID = arguments?.getSerializable(ARG_CRIME_ID) as UUID
+        val crimeId: Int = arguments?.getSerializable(ARG_CRIME_ID) as Int
         crimeDetailViewModel.loadCrime(crimeId)
     }
 
@@ -133,7 +133,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         private const val REQUEST_DATE = "DialogDate"
         private const val TAG = "CrimeFragment"
 
-        fun newInstance(crimeId: UUID): CrimeFragment {
+        fun newInstance(crimeId: Int?): CrimeFragment {
             val args = Bundle().apply {
                 putSerializable(ARG_CRIME_ID, crimeId)
             }

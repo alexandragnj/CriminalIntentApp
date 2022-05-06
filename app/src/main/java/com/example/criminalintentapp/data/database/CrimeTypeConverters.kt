@@ -18,7 +18,7 @@ class CrimeTypeConverters {
         }
     }
 
-    @TypeConverter
+    /*@TypeConverter
     fun toDate(uuid: String?): UUID? {
         return UUID.fromString(uuid)
     }
@@ -26,5 +26,5 @@ class CrimeTypeConverters {
     @TypeConverter
     fun fromUUID(uuid: UUID?): String? {
         return uuid?.toString()
-    }
+    }*/
 }

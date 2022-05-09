@@ -15,12 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.criminalintentapp.data.database.Crime
 import com.example.criminalintentapp.R
-import java.util.UUID
 
 class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
 
     interface Callbacks {
-        fun onCrimeSelected(crimeId: Int?)
+        fun onCrimeSelected(crimeId: Int)
     }
 
     var callbacks: Callbacks? = null
@@ -73,7 +72,6 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         return when (item.itemId) {
             R.id.new_crime -> {
                 val crime = Crime()
-                crimeListViewModel.addCrime(crime)
                 callbacks?.onCrimeSelected(crime.id)
                 true
             }

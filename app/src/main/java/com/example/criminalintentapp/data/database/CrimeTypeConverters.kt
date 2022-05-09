@@ -2,7 +2,6 @@ package com.example.criminalintentapp.data.database
 
 import androidx.room.TypeConverter
 import java.util.Date
-import java.util.UUID
 
 class CrimeTypeConverters {
 
@@ -17,14 +16,4 @@ class CrimeTypeConverters {
             Date(it)
         }
     }
-
-    /*@TypeConverter
-    fun toDate(uuid: String?): UUID? {
-        return UUID.fromString(uuid)
-    }
-
-    @TypeConverter
-    fun fromUUID(uuid: UUID?): String? {
-        return uuid?.toString()
-    }*/
 }

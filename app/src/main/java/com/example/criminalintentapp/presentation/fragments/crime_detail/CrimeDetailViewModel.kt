@@ -6,7 +6,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.criminalintentapp.data.database.Crime
 import com.example.criminalintentapp.data.repository.CrimeRepository
-import java.util.UUID
 
 class CrimeDetailViewModel : ViewModel() {
 
@@ -24,5 +23,9 @@ class CrimeDetailViewModel : ViewModel() {
 
     fun saveCrime(crime: Crime) {
         crimeRepository.updateCrime(crime)
+    }
+
+    fun addCrime(crime: Crime) {
+        crimeRepository.addCrime(crime)
     }
 }

@@ -148,13 +148,13 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
     private fun showAlertDialog() {
         context?.let {
             MaterialAlertDialogBuilder(it)
-                .setTitle("Alert")
-                .setMessage("If you exit now, the changes will not be saved")
+                .setTitle(R.string.dialog_title)
+                .setMessage(R.string.dialog_message)
                 .setNegativeButton(
-                    "Discard changes"
+                    R.string.dialog_negative_button
                 ) { _, _ -> activity?.supportFragmentManager?.popBackStack() }
                 .setPositiveButton(
-                    "Continue editing"
+                    R.string.dialog_positive_button
                 ) { dialogInterface, _ -> dialogInterface.dismiss() }
                 .show()
         }

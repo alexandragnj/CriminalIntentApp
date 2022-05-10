@@ -8,4 +8,8 @@
 
     <string name="empty_list">This list is empty.</string>
     <string name="save">Save</string>
+    <string name="dialog_title">Alert</string>
+    <string name="dialog_message">If you exit now, the changes will be lost</string>
+    <string name="dialog_negative_button">Discard changes</string>
+    <string name="dialog_positive_button">Continue editing</string>
 </resources>

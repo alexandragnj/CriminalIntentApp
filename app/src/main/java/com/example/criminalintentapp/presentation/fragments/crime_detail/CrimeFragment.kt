@@ -4,19 +4,18 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import com.example.criminalintentapp.data.database.Crime
 import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment
 import com.example.criminalintentapp.R
-import java.util.UUID
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener {
 
@@ -24,18 +23,30 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
     private lateinit var titleField: EditText
     private lateinit var dateButton: Button
     private lateinit var solvedCheckBox: CheckBox
+    private lateinit var saveButton: Button
     private val crimeDetailViewModel: CrimeDetailViewModel by lazy {
         ViewModelProvider(this).get(CrimeDetailViewModel::class.java)
     }
 
     override fun onStart() {
         super.onStart()
-        val crimeId: UUID = arguments?.getSerializable(ARG_CRIME_ID) as UUID
+        val crimeId: Int = arguments?.getSerializable(ARG_CRIME_ID) as Int
         crimeDetailViewModel.loadCrime(crimeId)
+        if (crimeDetailViewModel.crimeLiveData.value == null) {
+            dateButton.text = crime.date.toString()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    showAlertDialog()
+                }
+            })
+
         bindViews(view)
         setTextWatcher()
         setClickListeners()
@@ -53,11 +64,6 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                 updateUI()
             }
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        crimeDetailViewModel.saveCrime(crime)
     }
 
     private fun setTextWatcher() {
@@ -100,6 +106,16 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                 show(this@CrimeFragment.childFragmentManager, REQUEST_DATE)
             }
         }
+
+        saveButton.setOnClickListener {
+            if (crimeDetailViewModel.crimeLiveData.value == null) {
+                crimeDetailViewModel.addCrime(crime)
+                activity?.supportFragmentManager?.popBackStack()
+            } else {
+                crimeDetailViewModel.saveCrime(crime)
+                activity?.supportFragmentManager?.popBackStack()
+            }
+        }
     }
 
     private fun updateUI() {
@@ -126,6 +142,22 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         titleField = view.findViewById(R.id.crime_title) as EditText
         dateButton = view.findViewById(R.id.crime_date) as Button
         solvedCheckBox = view.findViewById(R.id.crime_solved) as CheckBox
+        saveButton = view.findViewById(R.id.crime_save) as Button
+    }
+
+    private fun showAlertDialog() {
+        context?.let {
+            MaterialAlertDialogBuilder(it)
+                .setTitle(R.string.dialog_title)
+                .setMessage(R.string.dialog_message)
+                .setNegativeButton(
+                    R.string.dialog_negative_button
+                ) { _, _ -> activity?.supportFragmentManager?.popBackStack() }
+                .setPositiveButton(
+                    R.string.dialog_positive_button
+                ) { dialogInterface, _ -> dialogInterface.dismiss() }
+                .show()
+        }
     }
 
     companion object {
@@ -133,7 +165,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         private const val REQUEST_DATE = "DialogDate"
         private const val TAG = "CrimeFragment"
 
-        fun newInstance(crimeId: UUID): CrimeFragment {
+        fun newInstance(crimeId: Int): CrimeFragment {
             val args = Bundle().apply {
                 putSerializable(ARG_CRIME_ID, crimeId)
             }

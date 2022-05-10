@@ -5,7 +5,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import java.util.UUID
 
 @Dao
 interface CrimeDao {
@@ -14,7 +13,7 @@ interface CrimeDao {
     fun getCrimes(): LiveData<List<Crime>>
 
     @Query("SELECT * FROM crime WHERE id=(:id)")
-    fun getCrime(id: UUID): LiveData<Crime?>
+    fun getCrime(id: Int): LiveData<Crime?>
 
     @Update
     fun updateCrime(crime: Crime)

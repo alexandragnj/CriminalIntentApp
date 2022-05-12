@@ -2,8 +2,7 @@ package com.example.criminalintentapp.presentation.fragments.crime_detail
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -141,20 +140,11 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                 crimeDetailViewModel.saveCrime(crime)
                 activity?.supportFragmentManager?.popBackStack()
             }
+            Log.d(TAG, "suspect: ${crime.suspect}")
         }
 
         reportButton.setOnClickListener {
-            Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, getCrimeReport())
-                putExtra(
-                    Intent.EXTRA_SUBJECT,
-                    getString(R.string.crime_report_subject)
-                )
-            }.also { intent ->
-                val chooserIntent = Intent.createChooser(intent, getString(R.string.send_report))
-                startActivity(chooserIntent)
-            }
+            sendReport()
         }
 
         suspectButton.apply {
@@ -169,31 +159,10 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
 
     private fun onActivityResult(result: ActivityResult) {
         if (result.resultCode != Activity.RESULT_OK) {
-            Log.d(TAG, "There is no result - onActiviyResult")
+            Log.d(TAG, "There is no result - onActivityResult")
             return
         } else {
-            val contactUri: Uri? = result.data?.data
-            //Specify which fields you want your query to return values for
-            val queryFields = arrayOf(ContactsContract.Contacts.DISPLAY_NAME)
-            //Perform your query - the contactUri is like a "where" clause here
-            val cursor = contactUri?.let {
-                requireActivity().contentResolver
-                    .query(it, queryFields, null, null, null)
-            }
-            cursor?.use {
-                //Verify cursor contains at least one result
-                if (it.count == 0) {
-                    return
-                }
-
-                //Pull out the first column of the first row of data
-                //that is your suspect's name
-                it.moveToFirst()
-                val suspect = it.getString(0)
-                crime.suspect = suspect
-                crimeDetailViewModel.saveCrime(crime)
-                suspectButton.text = suspect
-            }
+            getSuspectName(result.data?.data)
         }
     }
 
@@ -219,13 +188,69 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         }
 
         val dateString = DateFormat.format(DATE_FORMAT, crime.date).toString()
-        var suspect = if (crime.suspect.isBlank()) {
+        val suspect = if (crime.suspect.isBlank()) {
             getString(R.string.crime_report_no_suspect)
         } else {
             getString(R.string.crime_report_suspect, crime.suspect)
         }
 
         return getString(R.string.crime_report, crime.title, dateString, solvedString, suspect)
+    }
+
+    private fun sendReport() {
+        Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, getCrimeReport())
+            putExtra(
+                Intent.EXTRA_SUBJECT,
+                getString(R.string.crime_report_subject)
+            )
+        }.also { intent ->
+            val chooserIntent = Intent.createChooser(intent, getString(R.string.send_report))
+            startActivity(chooserIntent)
+        }
+    }
+
+    private fun getSuspectName(data: Uri?) {
+        val contactUri: Uri? = data
+        //Specify which fields you want your query to return values for
+        val queryFields = arrayOf(ContactsContract.Contacts.DISPLAY_NAME)
+        //Perform your query - the contactUri is like a "where" clause here
+        val cursor = contactUri?.let {
+            requireActivity().contentResolver
+                .query(it, queryFields, null, null, null)
+        }
+
+        //setSuspectName(cursor!!)
+        cursor?.use {
+            //Verify cursor contains at least one result
+            if (it.count == 0) {
+                return
+            }
+
+            //Pull out the first column of the first row of data
+            //that is your suspect's name
+            it.moveToFirst()
+            val suspect = it.getString(0)
+            crime.suspect = suspect
+            Log.d(TAG,"suspect1: ${crime.suspect}")
+            //crimeDetailViewModel.saveCrime(crime)
+            suspectButton.text = suspect
+        }
+    }
+
+    private fun setSuspectName(cursor: Cursor){
+        if (cursor.count == 0) {
+            return
+        }
+
+        //Pull out the first column of the first row of data
+        //that is your suspect's name
+        cursor.moveToFirst()
+        val suspect = cursor.getString(0)
+        crime.suspect = suspect
+        //crimeDetailViewModel.saveCrime(crime)
+        suspectButton.text = suspect
     }
 
     private fun bindViews(view: View) {

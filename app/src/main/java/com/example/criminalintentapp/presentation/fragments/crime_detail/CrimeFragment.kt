@@ -44,15 +44,6 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             onActivityResult(result)
         }
 
-    override fun onStart() {
-        super.onStart()
-        val crimeId: Int = arguments?.getSerializable(ARG_CRIME_ID) as Int
-        crimeDetailViewModel.loadCrime(crimeId)
-        if (crimeDetailViewModel.crimeLiveData.value == null) {
-            dateButton.text = crime.date.toString()
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(
@@ -64,6 +55,9 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             })
 
         bindViews(view)
+        if (crimeDetailViewModel.crimeLiveData.value == null) {
+            dateButton.text = crime.date.toString()
+        }
         setTextWatcher()
         setClickListeners()
 
@@ -80,6 +74,9 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                 updateUI()
             }
         }
+
+        val crimeId: Int = arguments?.getSerializable(ARG_CRIME_ID) as Int
+        crimeDetailViewModel.loadCrime(crimeId)
     }
 
     override fun onFragmentResult(requestCode: String, result: Bundle) {
@@ -147,13 +144,8 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             sendReport()
         }
 
-        suspectButton.apply {
-            val pickContactIntent =
-                Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
-
-            setOnClickListener {
-                resultLauncher.launch(pickContactIntent)
-            }
+        suspectButton.setOnClickListener {
+            setIntentSuspect()
         }
     }
 
@@ -221,25 +213,10 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                 .query(it, queryFields, null, null, null)
         }
 
-        //setSuspectName(cursor!!)
-        cursor?.use {
-            //Verify cursor contains at least one result
-            if (it.count == 0) {
-                return
-            }
-
-            //Pull out the first column of the first row of data
-            //that is your suspect's name
-            it.moveToFirst()
-            val suspect = it.getString(0)
-            crime.suspect = suspect
-            Log.d(TAG,"suspect1: ${crime.suspect}")
-            //crimeDetailViewModel.saveCrime(crime)
-            suspectButton.text = suspect
-        }
+        setSuspectName(cursor!!)
     }
 
-    private fun setSuspectName(cursor: Cursor){
+    private fun setSuspectName(cursor: Cursor) {
         if (cursor.count == 0) {
             return
         }
@@ -251,6 +228,13 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         crime.suspect = suspect
         //crimeDetailViewModel.saveCrime(crime)
         suspectButton.text = suspect
+    }
+
+    private fun setIntentSuspect() {
+        val pickContactIntent =
+            Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
+
+        resultLauncher.launch(pickContactIntent)
     }
 
     private fun bindViews(view: View) {

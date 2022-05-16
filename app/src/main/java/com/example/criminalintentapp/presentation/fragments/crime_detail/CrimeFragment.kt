@@ -55,9 +55,6 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             })
 
         bindViews(view)
-        if (crimeDetailViewModel.crimeLiveData.value == null) {
-            dateButton.text = crime.date.toString()
-        }
         setTextWatcher()
         setClickListeners()
 
@@ -71,8 +68,8 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         ) { crime ->
             crime?.let {
                 this.crime = crime
-                updateUI()
             }
+            updateUI()
         }
 
         val crimeId: Int = arguments?.getSerializable(ARG_CRIME_ID) as Int
@@ -160,9 +157,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
 
     private fun updateUI() {
         titleField.setText(crime.title)
-        dateButton.apply {
-            text = crime.date.toString()
-        }
+        dateButton.text = crime.date.toString()
         solvedCheckBox.apply {
             isChecked = crime.isSolved
             jumpDrawablesToCurrentState()
@@ -226,7 +221,6 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         cursor.moveToFirst()
         val suspect = cursor.getString(0)
         crime.suspect = suspect
-        //crimeDetailViewModel.saveCrime(crime)
         suspectButton.text = suspect
     }
 

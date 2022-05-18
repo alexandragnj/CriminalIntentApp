@@ -83,7 +83,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                 photoFile = crimeDetailViewModel.getPhotoFile(crime)
                 photoUri = FileProvider.getUriForFile(
                     requireActivity(),
-                    R.string.authority.toString(),
+                    "com.example.criminalintentapp.fileprovider",
                     photoFile
                 )
             }
@@ -94,6 +94,14 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
 
         val crimeId: Int = arguments?.getSerializable(ARG_CRIME_ID) as Int
         crimeDetailViewModel.loadCrime(crimeId)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        requireActivity().revokeUriPermission(
+            photoUri,
+            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        )
     }
 
     override fun onFragmentResult(requestCode: String, result: Bundle) {

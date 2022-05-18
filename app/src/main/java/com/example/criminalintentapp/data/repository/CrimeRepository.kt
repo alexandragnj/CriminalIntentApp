@@ -11,7 +11,6 @@ class CrimeRepository private constructor(
     private val filesDir: File?
 ) {
 
-
     private val executor = Executors.newSingleThreadExecutor()
 
     fun getCrimes(): LiveData<List<Crime>> = crimeDao.getCrimes()

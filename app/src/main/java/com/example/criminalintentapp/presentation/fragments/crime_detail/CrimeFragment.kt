@@ -70,7 +70,6 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         bindViews(view)
         setTextWatcher()
 
-
         childFragmentManager.setFragmentResultListener(
             REQUEST_DATE,
             viewLifecycleOwner,
@@ -84,7 +83,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                 photoFile = crimeDetailViewModel.getPhotoFile(crime)
                 photoUri = FileProvider.getUriForFile(
                     requireActivity(),
-                    "com.example.criminalintentapp.fileprovider",
+                    R.string.authority.toString(),
                     photoFile
                 )
             }

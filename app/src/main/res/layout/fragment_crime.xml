@@ -3,16 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp"
+    android:layout_margin="@dimen/linear_layout_margins"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
+        android:layout_marginStart="@dimen/linear_layout_margins"
+        android:layout_marginTop="@dimen/linear_layout_margins"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -21,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/crime_photo"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="@dimen/image_view_width"
+                android:layout_height="@dimen/image_view_height"
                 android:background="@android:color/darker_gray"
                 android:cropToPadding="true"
                 android:scaleType="centerInside" />
@@ -40,8 +40,8 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-
             <TextView
+                android:id="@+id/text_view_title"
                 style="?android:listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -56,6 +56,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/text_view_details"
         style="?android:listSeparatorTextViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

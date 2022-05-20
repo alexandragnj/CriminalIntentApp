@@ -13,8 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.criminalintentapp.data.database.Crime
 import com.example.criminalintentapp.R
+import com.example.criminalintentapp.data.database.Crime
 
 class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
 

@@ -2,9 +2,9 @@ package com.example.criminalintentapp.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.criminalintentapp.R
 import com.example.criminalintentapp.presentation.fragments.crime_detail.CrimeFragment
 import com.example.criminalintentapp.presentation.fragments.crime_list.CrimeListFragment
-import com.example.criminalintentapp.R
 
 class MainActivity : AppCompatActivity(), CrimeListFragment.Callbacks {
 

@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.criminalintentapp.data.database.Crime
 import com.example.criminalintentapp.R
+import com.example.criminalintentapp.data.database.Crime
 
 class CrimeAdapter(var crimes: List<Crime>) :
     RecyclerView.Adapter<CrimeAdapter.CrimeHolder>() {

@@ -9,7 +9,6 @@ class CriminalIntentApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         val crimeDao = CrimeDatabase.getDatabase(this).crimeDao()
-        val filesDir = this.applicationContext.filesDir
-        CrimeRepository.initialize(crimeDao, filesDir)
+        CrimeRepository.initialize(crimeDao)
     }
 }

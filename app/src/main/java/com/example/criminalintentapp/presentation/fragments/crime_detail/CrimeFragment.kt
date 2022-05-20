@@ -22,7 +22,6 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.ViewModelProvider
-import com.example.criminalintentapp.data.database.Crime
 import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.getScaledBitmap
@@ -31,9 +30,8 @@ import java.io.File
 
 class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener {
 
-    private var crime: Crime = Crime()
-    private lateinit var photoFile: File
-    private lateinit var photoUri: Uri
+    private lateinit var temporaryFile: File
+    private lateinit var temporaryUri: Uri
     private lateinit var titleField: EditText
     private lateinit var dateButton: Button
     private lateinit var solvedCheckBox: CheckBox
@@ -70,6 +68,13 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         bindViews(view)
         setTextWatcher()
 
+        temporaryFile = File(context?.applicationContext?.filesDir, "temporary_file")
+        temporaryUri = FileProvider.getUriForFile(
+            requireActivity(),
+            AUTHORITY,
+            temporaryFile
+        )
+
         childFragmentManager.setFragmentResultListener(
             REQUEST_DATE,
             viewLifecycleOwner,
@@ -79,13 +84,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             viewLifecycleOwner
         ) { crime ->
             crime?.let {
-                this.crime = crime
-                photoFile = crimeDetailViewModel.getPhotoFile(crime)
-                photoUri = FileProvider.getUriForFile(
-                    requireActivity(),
-                    "com.example.criminalintentapp.fileprovider",
-                    photoFile
-                )
+                crimeDetailViewModel.crime = crime
             }
             updateUI()
         }
@@ -96,19 +95,11 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         crimeDetailViewModel.loadCrime(crimeId)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        requireActivity().revokeUriPermission(
-            photoUri,
-            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-        )
-    }
-
     override fun onFragmentResult(requestCode: String, result: Bundle) {
         when (requestCode) {
             REQUEST_DATE -> {
                 Log.d(TAG, "RECEIVED RESULT FOR $requestCode")
-                crime.date = DatePickerFragment.getSelectedDate(result)
+                crimeDetailViewModel.crime.date = DatePickerFragment.getSelectedDate(result)
             }
         }
     }
@@ -130,7 +121,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                 before: Int,
                 count: Int
             ) {
-                crime.title = sequence.toString()
+                crimeDetailViewModel.crime.title = sequence.toString()
             }
 
             override fun afterTextChanged(sequence: Editable?) {
@@ -144,25 +135,32 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
     private fun setClickListeners() {
         solvedCheckBox.apply {
             setOnCheckedChangeListener { _, isChecked ->
-                crime.isSolved = isChecked
+                crimeDetailViewModel.crime.isSolved = isChecked
             }
         }
 
         dateButton.setOnClickListener {
-            DatePickerFragment.newInstance(crime.date, REQUEST_DATE).apply {
+            DatePickerFragment.newInstance(crimeDetailViewModel.crime.date, REQUEST_DATE).apply {
                 show(this@CrimeFragment.childFragmentManager, REQUEST_DATE)
             }
         }
 
         saveButton.setOnClickListener {
+
+            temporaryFile.renameTo(
+                File(
+                    context?.applicationContext?.filesDir,
+                    crimeDetailViewModel.crime.photoFileName
+                )
+            )
             if (crimeDetailViewModel.crimeLiveData.value == null) {
-                crimeDetailViewModel.addCrime(crime)
+                crimeDetailViewModel.addCrime(crimeDetailViewModel.crime)
                 activity?.supportFragmentManager?.popBackStack()
             } else {
-                crimeDetailViewModel.saveCrime(crime)
+                crimeDetailViewModel.saveCrime(crimeDetailViewModel.crime)
                 activity?.supportFragmentManager?.popBackStack()
             }
-            Log.d(TAG, "suspect: ${crime.suspect}")
+            Log.d(TAG, "suspect: ${crimeDetailViewModel.crime.suspect}")
         }
 
         reportButton.setOnClickListener {
@@ -179,7 +177,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             val captureImage = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
             setOnClickListener {
-                captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+                captureImage.putExtra(MediaStore.EXTRA_OUTPUT, temporaryUri)
 
                 val cameraActivities: List<ResolveInfo> = packageManager.queryIntentActivities(
                     captureImage,
@@ -189,7 +187,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                 for (cameraActivity in cameraActivities) {
                     requireActivity().grantUriPermission(
                         cameraActivity.activityInfo.packageName,
-                        photoUri,
+                        temporaryUri,
                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                     )
                 }
@@ -214,26 +212,32 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             Log.d(TAG, "There is no result - onActivityResult")
             return
         } else {
-            requireActivity().revokeUriPermission(photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            updatePhotoView()
+            requireActivity().revokeUriPermission(
+                temporaryUri,
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            )
+            updatePhotoView(temporaryFile)
         }
     }
 
     private fun updateUI() {
-        titleField.setText(crime.title)
-        dateButton.text = crime.date.toString()
+        titleField.setText(crimeDetailViewModel.crime.title)
+        dateButton.text = crimeDetailViewModel.crime.date.toString()
         solvedCheckBox.apply {
-            isChecked = crime.isSolved
+            isChecked = crimeDetailViewModel.crime.isSolved
             jumpDrawablesToCurrentState()
         }
-        if (crime.suspect.isNotEmpty()) {
-            suspectButton.text = crime.suspect
+        if (crimeDetailViewModel.crime.suspect.isNotEmpty()) {
+            suspectButton.text = crimeDetailViewModel.crime.suspect
         }
-        updatePhotoView()
+
+        val photoFile =
+            File(context?.applicationContext?.filesDir, crimeDetailViewModel.crime.photoFileName)
+        updatePhotoView(photoFile)
     }
 
-    private fun updatePhotoView() {
-        if (photoFile.exists()) {
+    private fun updatePhotoView(photoFile: File?) {
+        if (photoFile != null && photoFile.exists()) {
             val bitmap = getScaledBitmap(photoFile.path, requireActivity())
             photoView.setImageBitmap(bitmap)
         } else {
@@ -242,20 +246,26 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
     }
 
     private fun getCrimeReport(): String {
-        val solvedString = if (crime.isSolved) {
+        val solvedString = if (crimeDetailViewModel.crime.isSolved) {
             getString(R.string.crime_report_solved)
         } else {
             getString(R.string.crime_report_unsolved)
         }
 
-        val dateString = DateFormat.format(DATE_FORMAT, crime.date).toString()
-        val suspect = if (crime.suspect.isBlank()) {
+        val dateString = DateFormat.format(DATE_FORMAT, crimeDetailViewModel.crime.date).toString()
+        val suspect = if (crimeDetailViewModel.crime.suspect.isBlank()) {
             getString(R.string.crime_report_no_suspect)
         } else {
-            getString(R.string.crime_report_suspect, crime.suspect)
+            getString(R.string.crime_report_suspect, crimeDetailViewModel.crime.suspect)
         }
 
-        return getString(R.string.crime_report, crime.title, dateString, solvedString, suspect)
+        return getString(
+            R.string.crime_report,
+            crimeDetailViewModel.crime.title,
+            dateString,
+            solvedString,
+            suspect
+        )
     }
 
     private fun sendReport() {
@@ -294,7 +304,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         //that is your suspect's name
         cursor.moveToFirst()
         val suspect = cursor.getString(0)
-        crime.suspect = suspect
+        crimeDetailViewModel.crime.suspect = suspect
         suspectButton.text = suspect
     }
 
@@ -323,7 +333,10 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                 .setMessage(R.string.dialog_message)
                 .setNegativeButton(
                     R.string.dialog_negative_button
-                ) { _, _ -> activity?.supportFragmentManager?.popBackStack() }
+                ) { _, _ ->
+                    temporaryFile.delete()
+                    activity?.supportFragmentManager?.popBackStack()
+                }
                 .setPositiveButton(
                     R.string.dialog_positive_button
                 ) { dialogInterface, _ -> dialogInterface.dismiss() }
@@ -336,6 +349,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         private const val REQUEST_DATE = "DialogDate"
         private const val TAG = "CrimeFragment"
         private const val DATE_FORMAT = "EEE, MMM, dd"
+        private const val AUTHORITY = "com.example.criminalintentapp.fileprovider"
 
         fun newInstance(crimeId: Int): CrimeFragment {
             val args = Bundle().apply {

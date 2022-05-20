@@ -12,6 +12,7 @@ class CrimeDetailViewModel : ViewModel() {
 
     private val crimeRepository = CrimeRepository.get()
     private val crimeIdLiveData = MutableLiveData<Int>()
+    var crime = Crime()
 
     val crimeLiveData: LiveData<Crime?> =
         Transformations.switchMap(crimeIdLiveData) { crimeId ->
@@ -28,9 +29,5 @@ class CrimeDetailViewModel : ViewModel() {
 
     fun addCrime(crime: Crime) {
         crimeRepository.addCrime(crime)
-    }
-
-    fun getPhotoFile(crime: Crime): File {
-        return crimeRepository.getPhotoFile(crime)
     }
 }

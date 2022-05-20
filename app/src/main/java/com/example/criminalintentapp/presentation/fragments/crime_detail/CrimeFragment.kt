@@ -14,7 +14,11 @@ import android.text.TextWatcher
 import android.text.format.DateFormat
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,9 +26,9 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.ViewModelProvider
-import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.getScaledBitmap
+import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
 
@@ -45,12 +49,12 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         ViewModelProvider(this).get(CrimeDetailViewModel::class.java)
     }
 
-    private var resultLauncherSuspect =
+    private val resultLauncherSuspect =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             onActivityResultSuspect(result)
         }
 
-    private var resultLauncherPhoto =
+    private val resultLauncherPhoto =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             onActivityResultPhoto(result)
         }
@@ -63,7 +67,8 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                 override fun handleOnBackPressed() {
                     showAlertDialog()
                 }
-            })
+            }
+        )
 
         bindViews(view)
         setTextWatcher()
@@ -146,13 +151,13 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         }
 
         saveButton.setOnClickListener {
-
             temporaryFile.renameTo(
                 File(
                     context?.applicationContext?.filesDir,
                     crimeDetailViewModel.crime.photoFileName
                 )
             )
+            
             if (crimeDetailViewModel.crimeLiveData.value == null) {
                 crimeDetailViewModel.addCrime(crimeDetailViewModel.crime)
                 activity?.supportFragmentManager?.popBackStack()
@@ -171,29 +176,8 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             setIntentSuspect()
         }
 
-        photoButton.apply {
-            val packageManager: PackageManager = requireActivity().packageManager
-
-            val captureImage = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-            setOnClickListener {
-                captureImage.putExtra(MediaStore.EXTRA_OUTPUT, temporaryUri)
-
-                val cameraActivities: List<ResolveInfo> = packageManager.queryIntentActivities(
-                    captureImage,
-                    PackageManager.MATCH_DEFAULT_ONLY
-                )
-
-                for (cameraActivity in cameraActivities) {
-                    requireActivity().grantUriPermission(
-                        cameraActivity.activityInfo.packageName,
-                        temporaryUri,
-                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                    )
-                }
-
-                resultLauncherPhoto.launch(captureImage)
-            }
+        photoButton.setOnClickListener {
+            takePhoto()
         }
     }
 
@@ -284,9 +268,9 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
 
     private fun getSuspectName(data: Uri?) {
         val contactUri: Uri? = data
-        //Specify which fields you want your query to return values for
+        // Specify which fields you want your query to return values for
         val queryFields = arrayOf(ContactsContract.Contacts.DISPLAY_NAME)
-        //Perform your query - the contactUri is like a "where" clause here
+        // Perform your query - the contactUri is like a "where" clause here
         val cursor = contactUri?.let {
             requireActivity().contentResolver
                 .query(it, queryFields, null, null, null)
@@ -300,8 +284,8 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             return
         }
 
-        //Pull out the first column of the first row of data
-        //that is your suspect's name
+        // Pull out the first column of the first row of data
+        // that is your suspect's name
         cursor.moveToFirst()
         val suspect = cursor.getString(0)
         crimeDetailViewModel.crime.suspect = suspect
@@ -313,6 +297,25 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
 
         resultLauncherSuspect.launch(pickContactIntent)
+    }
+
+    private fun takePhoto() {
+        val packageManager: PackageManager = requireActivity().packageManager
+        val captureImage = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        captureImage.putExtra(MediaStore.EXTRA_OUTPUT, temporaryUri)
+
+        val cameraActivities: List<ResolveInfo> = packageManager.queryIntentActivities(
+            captureImage,
+            PackageManager.MATCH_DEFAULT_ONLY
+        )
+        for (cameraActivity in cameraActivities) {
+            requireActivity().grantUriPermission(
+                cameraActivity.activityInfo.packageName,
+                temporaryUri,
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            )
+        }
+        resultLauncherPhoto.launch(captureImage)
     }
 
     private fun bindViews(view: View) {

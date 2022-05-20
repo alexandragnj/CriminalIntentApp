@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory
 import androidx.window.layout.WindowMetricsCalculator
 
 fun getScaledBitmap(path: String, destWidth: Int, destHeight: Int): Bitmap {
-    //Read in the dimensions of the image on disk
+    // Read in the dimensions of the image on disk
     var options = BitmapFactory.Options()
     options.inJustDecodeBounds = true
     BitmapFactory.decodeFile(path, options)
@@ -14,7 +14,7 @@ fun getScaledBitmap(path: String, destWidth: Int, destHeight: Int): Bitmap {
     val srcWidth = options.outWidth.toFloat()
     val srcHeight = options.outHeight.toFloat()
 
-    //Figure out how much to scale down by
+    // Figure out how much to scale down by
     var inSampleSize = 1
     if (srcHeight > destHeight || srcWidth > destWidth) {
         val heightScale = srcHeight / destHeight
@@ -31,7 +31,7 @@ fun getScaledBitmap(path: String, destWidth: Int, destHeight: Int): Bitmap {
     options = BitmapFactory.Options()
     options.inSampleSize = inSampleSize
 
-    //Read in and create final bitmap
+    // Read in and create final bitmap
     return BitmapFactory.decodeFile(path, options)
 }
 

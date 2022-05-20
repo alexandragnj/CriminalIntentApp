@@ -6,7 +6,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.criminalintentapp.data.database.Crime
 import com.example.criminalintentapp.data.repository.CrimeRepository
-import java.io.File
 
 class CrimeDetailViewModel : ViewModel() {
 

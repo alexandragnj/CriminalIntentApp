@@ -157,7 +157,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                     crimeDetailViewModel.crime.photoFileName
                 )
             )
-            
+
             if (crimeDetailViewModel.crimeLiveData.value == null) {
                 crimeDetailViewModel.addCrime(crimeDetailViewModel.crime)
                 activity?.supportFragmentManager?.popBackStack()
@@ -224,8 +224,10 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         if (photoFile != null && photoFile.exists()) {
             val bitmap = getScaledBitmap(photoFile.path, requireActivity())
             photoView.setImageBitmap(bitmap)
+            photoView.contentDescription = getString(R.string.crime_photo_image_description)
         } else {
             photoView.setImageDrawable(null)
+            photoView.contentDescription = getString(R.string.crime_photo_no_image_description)
         }
     }
 

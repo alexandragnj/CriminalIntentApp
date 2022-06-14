@@ -98,6 +98,8 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
 
         val crimeId: Int = arguments?.getSerializable(ARG_CRIME_ID) as Int
         crimeDetailViewModel.loadCrime(crimeId)
+
+        Log.d(TAG, "onViewCreated")
     }
 
     override fun onFragmentResult(requestCode: String, result: Bundle) {
@@ -223,6 +225,10 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
     private fun updatePhotoView(photoFile: File?) {
         if (photoFile != null && photoFile.exists()) {
             val bitmap = getScaledBitmap(photoFile.path, requireActivity())
+            photoView.setImageBitmap(bitmap)
+            photoView.contentDescription = getString(R.string.crime_photo_image_description)
+        } else if(temporaryFile.exists()) {
+            val bitmap = getScaledBitmap(temporaryFile.path, requireActivity())
             photoView.setImageBitmap(bitmap)
             photoView.contentDescription = getString(R.string.crime_photo_image_description)
         } else {

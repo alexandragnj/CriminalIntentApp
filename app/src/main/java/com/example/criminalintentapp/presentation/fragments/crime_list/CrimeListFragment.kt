@@ -49,10 +49,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         crimeListViewModel.crimesListLiveData.observe(
             viewLifecycleOwner
         ) { crimes ->
-            if (crimes.isEmpty()) {
-                emptyListTextView.isVisible = true
-                emptyListTextView.setText(R.string.empty_list)
-            }
+            emptyListTextView.isVisible = crimes.isEmpty()
             Log.i(TAG, "Got crimes ${crimes.size}")
             setupUI(crimes)
         }

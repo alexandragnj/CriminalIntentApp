@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.database.Cursor
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -222,19 +223,18 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         updatePhotoView(photoFile)
     }
 
-    private fun updatePhotoView(photoFile: File?) {
-        if (photoFile != null && photoFile.exists()) {
-            val bitmap = getScaledBitmap(photoFile.path, requireActivity())
-            photoView.setImageBitmap(bitmap)
-            photoView.contentDescription = getString(R.string.crime_photo_image_description)
-        } else if(temporaryFile.exists()) {
-            val bitmap = getScaledBitmap(temporaryFile.path, requireActivity())
-            photoView.setImageBitmap(bitmap)
-            photoView.contentDescription = getString(R.string.crime_photo_image_description)
-        } else {
-            photoView.setImageDrawable(null)
-            photoView.contentDescription = getString(R.string.crime_photo_no_image_description)
+    private fun updatePhotoView(photoFile: File) {
+        var bitmap: Bitmap? = null
+        when {
+            photoFile.exists() -> bitmap = getScaledBitmap(photoFile.path, requireActivity())
+            temporaryFile.exists() -> bitmap = getScaledBitmap(temporaryFile.path, requireActivity())
         }
+        updatePhotoViewProperties(bitmap)
+    }
+
+    private fun updatePhotoViewProperties(bitmap: Bitmap?) {
+        photoView.setImageBitmap(bitmap)
+        photoView.contentDescription = getString(R.string.crime_photo_image_description)
     }
 
     private fun getCrimeReport(): String {

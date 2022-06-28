@@ -1,6 +1,7 @@
 package com.example.criminalintentapp.presentation.fragments.crime_list
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.data.database.Crime
+import com.example.criminalintentapp.presentation.LoginActivity
+import com.google.firebase.auth.FirebaseAuth
 
 class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
 
@@ -70,6 +73,14 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
             R.id.new_crime -> {
                 val crime = Crime()
                 callbacks?.onCrimeSelected(crime.id)
+                true
+            }
+
+            R.id.logout -> {
+                FirebaseAuth.getInstance().signOut()
+                val intent=Intent(context, LoginActivity::class.java)
+                startActivity(intent)
+                activity?.onBackPressed()
                 true
             }
             else -> return super.onOptionsItemSelected(item)

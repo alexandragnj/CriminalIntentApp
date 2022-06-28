@@ -24,4 +24,13 @@
     <string name="dialog_message">If you exit now, the changes will be lost</string>
     <string name="dialog_negative_button">Discard changes</string>
     <string name="dialog_positive_button">Continue editing</string>
+    <string name="login_to_criminalintent">Login to CriminalIntent</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="no_account_sign_up">No account? Sign up!</string>
+    <string name="register">Register</string>
+    <string name="have_an_account_sign_in">Have an account? Sign in!</string>
+    <string name="register_to_criminalintent">Register to CriminalIntent</string>
+
 </resources>

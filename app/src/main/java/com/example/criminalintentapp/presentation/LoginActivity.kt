@@ -21,6 +21,13 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        val user=FirebaseAuth.getInstance().currentUser
+        if(user!=null){
+            val intent=Intent(this@LoginActivity, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
         bindViews()
 
         setOnClickListeners()

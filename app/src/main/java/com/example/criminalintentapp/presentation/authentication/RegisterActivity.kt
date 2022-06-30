@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.criminalintentapp.R
 import com.example.criminalintentapp.databinding.ActivityRegisterBinding
 
 class RegisterActivity : AppCompatActivity() {
@@ -17,6 +18,12 @@ class RegisterActivity : AppCompatActivity() {
         val binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        initViewModelObservers()
+
+        setOnClickListeners(binding)
+    }
+
+    private fun initViewModelObservers() {
         authenticationViewModel.userRegisterLiveData.observe(this) { user ->
             if (user != null) {
                 Toast.makeText(this, "Registered successfully", Toast.LENGTH_SHORT).show()
@@ -28,8 +35,6 @@ class RegisterActivity : AppCompatActivity() {
             Toast.makeText(this, message, Toast.LENGTH_LONG)
                 .show()
         }
-
-        setOnClickListeners(binding)
     }
 
     private fun setOnClickListeners(binding: ActivityRegisterBinding) {
@@ -38,14 +43,18 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.btnSignUp.setOnClickListener {
-            if (binding.etSignUpEmail.text.isEmpty() || binding.etSignUpPassword.text.isEmpty()) {
-                Toast.makeText(this, "Complete the Email and Password fields", Toast.LENGTH_LONG)
-                    .show()
-            } else {
+            if (authenticationViewModel.checkFields(
+                    binding.etSignUpEmail.text.toString(),
+                    binding.etSignUpPassword.text.toString()
+                )
+            ) {
                 authenticationViewModel.register(
                     binding.etSignUpEmail.text.toString(),
                     binding.etSignUpPassword.text.toString()
                 )
+            } else {
+                Toast.makeText(this, getString(R.string.empty_fields), Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }

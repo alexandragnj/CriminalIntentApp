@@ -5,9 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.criminalintentapp.R
 import com.example.criminalintentapp.databinding.ActivityLoginBinding
 import com.example.criminalintentapp.presentation.MainActivity
-import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
 
@@ -20,21 +20,19 @@ class LoginActivity : AppCompatActivity() {
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-            startActivity(intent)
-            finish()
+        if (authenticationViewModel.currentUser != null) {
+            goToMainActivity(false)
         }
 
+        initViewModelObservers()
+
+        setOnClickListeners(binding)
+    }
+
+    private fun initViewModelObservers() {
         authenticationViewModel.userLoginLiveData.observe(this) { user ->
             if (user != null) {
-                Toast.makeText(this, "Logged in successfully", Toast.LENGTH_SHORT).show()
-
-                val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
+                goToMainActivity(true)
             }
         }
 
@@ -42,8 +40,6 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this, message, Toast.LENGTH_LONG)
                 .show()
         }
-
-        setOnClickListeners(binding)
     }
 
     private fun setOnClickListeners(binding: ActivityLoginBinding) {
@@ -53,15 +49,32 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnSignIn.setOnClickListener {
-            if (binding.etSignInEmail.text.isEmpty() || binding.etSignInPassword.text.isEmpty()) {
-                Toast.makeText(this, "Complete the Email and Password fields", Toast.LENGTH_LONG)
-                    .show()
-            } else {
+            if (authenticationViewModel.checkFields(
+                    binding.etSignInEmail.text.toString(),
+                    binding.etSignInPassword.text.toString()
+                )
+            ) {
                 authenticationViewModel.login(
                     binding.etSignInEmail.text.toString(),
                     binding.etSignInPassword.text.toString()
                 )
+            } else {
+                Toast.makeText(this, getString(R.string.empty_fields), Toast.LENGTH_LONG)
+                    .show()
             }
+        }
+    }
+
+    private fun goToMainActivity(clearBackStack: Boolean) {
+        if (clearBackStack) {
+            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        } else {
+            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }

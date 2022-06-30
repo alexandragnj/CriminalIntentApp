@@ -66,15 +66,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun goToMainActivity(clearBackStack: Boolean) {
+        val intent = Intent(this@LoginActivity, MainActivity::class.java)
         if (clearBackStack) {
-            val intent = Intent(this@LoginActivity, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            finish()
-        } else {
-            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-            startActivity(intent)
-            finish()
         }
+        startActivity(intent)
+        finish()
     }
 }

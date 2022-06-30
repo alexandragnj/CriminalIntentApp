@@ -11,17 +11,23 @@
         android:layout_gravity="center"
         android:orientation="vertical">
 
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="30dp"
+            android:src="@drawable/criminalintent_image" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="100dp"
             android:gravity="center"
-            android:text="@string/login_to_criminalintent"
+            android:text="@string/welcome_to_criminalintent"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/edit_text_signIn_email"
+            android:id="@+id/et_signIn_email"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -30,7 +36,7 @@
             android:inputType="textEmailAddress"/>
 
         <EditText
-            android:id="@+id/edit_text_signIn_password"
+            android:id="@+id/et_signIn_password"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -39,7 +45,7 @@
             android:inputType="textPassword"/>
 
         <Button
-            android:id="@+id/button_signIn"
+            android:id="@+id/btn_signIn"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -47,7 +53,7 @@
             android:text="@string/login" />
 
         <TextView
-            android:id="@+id/text_view_signUp"
+            android:id="@+id/tv_signUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"

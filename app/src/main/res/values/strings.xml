@@ -32,5 +32,7 @@
     <string name="register">Register</string>
     <string name="have_an_account_sign_in">Have an account? Sign in!</string>
     <string name="register_to_criminalintent">Register to CriminalIntent</string>
+    <string name="welcome_to_criminalintent">Welcome to CriminalIntent!</string>
+    <string name="create_an_account">Create an account</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.example.criminalintentapp.presentation
+package com.example.criminalintentapp.presentation.authentication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -38,7 +38,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.btnSignUp.setOnClickListener {
-            if (binding.etSignUpEmail.text.isEmpty() && binding.etSignUpPassword.text.isEmpty()) {
+            if (binding.etSignUpEmail.text.isEmpty() || binding.etSignUpPassword.text.isEmpty()) {
                 Toast.makeText(this, "Complete the Email and Password fields", Toast.LENGTH_LONG)
                     .show()
             } else {

@@ -1,4 +1,4 @@
-package com.example.criminalintentapp.presentation
+package com.example.criminalintentapp.presentation.authentication
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.criminalintentapp.databinding.ActivityLoginBinding
+import com.example.criminalintentapp.presentation.MainActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
@@ -52,7 +53,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnSignIn.setOnClickListener {
-            if (binding.etSignInEmail.text.isEmpty() && binding.etSignInPassword.text.isEmpty()) {
+            if (binding.etSignInEmail.text.isEmpty() || binding.etSignInPassword.text.isEmpty()) {
                 Toast.makeText(this, "Complete the Email and Password fields", Toast.LENGTH_LONG)
                     .show()
             } else {

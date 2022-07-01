@@ -25,7 +25,6 @@ class LoginActivity : AppCompatActivity() {
         }
 
         initViewModelObservers()
-
         setOnClickListeners(binding)
     }
 
@@ -49,20 +48,16 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnSignIn.setOnClickListener {
-            tryToLoginIn(binding)
+            tryToLogin(binding)
         }
     }
 
-    private fun tryToLoginIn(binding: ActivityLoginBinding) {
-        if (authenticationViewModel.checkFields(
-                binding.etSignInEmail.text.toString(),
-                binding.etSignInPassword.text.toString()
-            )
-        ) {
-            authenticationViewModel.login(
-                binding.etSignInEmail.text.toString(),
-                binding.etSignInPassword.text.toString()
-            )
+    private fun tryToLogin(binding: ActivityLoginBinding) {
+        val email = binding.etSignInEmail.text.toString()
+        val password = binding.etSignInPassword.text.toString()
+
+        if (authenticationViewModel.checkFields(email, password)) {
+            authenticationViewModel.login(email, password)
         } else {
             Toast.makeText(this, getString(R.string.empty_fields), Toast.LENGTH_LONG)
                 .show()

@@ -21,14 +21,12 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initViewModelObservers()
-
         setOnClickListeners(binding)
     }
 
     private fun initViewModelObservers() {
         authenticationViewModel.userRegisterLiveData.observe(this) { user ->
             user?.let {
-                Toast.makeText(this, "Registered successfully", Toast.LENGTH_SHORT).show()
                 goToMainActivity()
             }
         }
@@ -50,15 +48,11 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun tryToRegister(binding: ActivityRegisterBinding) {
-        if (authenticationViewModel.checkFields(
-                binding.etSignUpEmail.text.toString(),
-                binding.etSignUpPassword.text.toString()
-            )
-        ) {
-            authenticationViewModel.register(
-                binding.etSignUpEmail.text.toString(),
-                binding.etSignUpPassword.text.toString()
-            )
+        val email = binding.etSignUpEmail.text.toString()
+        val password = binding.etSignUpPassword.text.toString()
+
+        if (authenticationViewModel.checkFields(email, password)) {
+            authenticationViewModel.register(email, password)
         } else {
             Toast.makeText(this, getString(R.string.empty_fields), Toast.LENGTH_LONG)
                 .show()

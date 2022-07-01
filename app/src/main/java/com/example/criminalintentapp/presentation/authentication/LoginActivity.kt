@@ -31,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initViewModelObservers() {
         authenticationViewModel.userLoginLiveData.observe(this) { user ->
-            if (user != null) {
+            user?.let {
                 goToMainActivity(true)
             }
         }
@@ -49,19 +49,23 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnSignIn.setOnClickListener {
-            if (authenticationViewModel.checkFields(
-                    binding.etSignInEmail.text.toString(),
-                    binding.etSignInPassword.text.toString()
-                )
-            ) {
-                authenticationViewModel.login(
-                    binding.etSignInEmail.text.toString(),
-                    binding.etSignInPassword.text.toString()
-                )
-            } else {
-                Toast.makeText(this, getString(R.string.empty_fields), Toast.LENGTH_LONG)
-                    .show()
-            }
+            tryToLoginIn(binding)
+        }
+    }
+
+    private fun tryToLoginIn(binding: ActivityLoginBinding) {
+        if (authenticationViewModel.checkFields(
+                binding.etSignInEmail.text.toString(),
+                binding.etSignInPassword.text.toString()
+            )
+        ) {
+            authenticationViewModel.login(
+                binding.etSignInEmail.text.toString(),
+                binding.etSignInPassword.text.toString()
+            )
+        } else {
+            Toast.makeText(this, getString(R.string.empty_fields), Toast.LENGTH_LONG)
+                .show()
         }
     }
 

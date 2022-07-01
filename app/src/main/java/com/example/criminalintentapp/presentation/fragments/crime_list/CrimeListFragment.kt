@@ -80,7 +80,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
                 FirebaseAuth.getInstance().signOut()
                 val intent=Intent(context, LoginActivity::class.java)
                 startActivity(intent)
-                activity?.onBackPressed()
+                activity?.finish()
                 true
             }
             else -> return super.onOptionsItemSelected(item)

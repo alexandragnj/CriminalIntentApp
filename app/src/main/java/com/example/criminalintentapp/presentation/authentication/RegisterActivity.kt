@@ -1,11 +1,13 @@
 package com.example.criminalintentapp.presentation.authentication
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.databinding.ActivityRegisterBinding
+import com.example.criminalintentapp.presentation.MainActivity
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -25,9 +27,9 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun initViewModelObservers() {
         authenticationViewModel.userRegisterLiveData.observe(this) { user ->
-            if (user != null) {
+            user?.let {
                 Toast.makeText(this, "Registered successfully", Toast.LENGTH_SHORT).show()
-                onBackPressed()
+                goToMainActivity()
             }
         }
 
@@ -43,19 +45,30 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.btnSignUp.setOnClickListener {
-            if (authenticationViewModel.checkFields(
-                    binding.etSignUpEmail.text.toString(),
-                    binding.etSignUpPassword.text.toString()
-                )
-            ) {
-                authenticationViewModel.register(
-                    binding.etSignUpEmail.text.toString(),
-                    binding.etSignUpPassword.text.toString()
-                )
-            } else {
-                Toast.makeText(this, getString(R.string.empty_fields), Toast.LENGTH_LONG)
-                    .show()
-            }
+            tryToRegister(binding)
         }
+    }
+
+    private fun tryToRegister(binding: ActivityRegisterBinding) {
+        if (authenticationViewModel.checkFields(
+                binding.etSignUpEmail.text.toString(),
+                binding.etSignUpPassword.text.toString()
+            )
+        ) {
+            authenticationViewModel.register(
+                binding.etSignUpEmail.text.toString(),
+                binding.etSignUpPassword.text.toString()
+            )
+        } else {
+            Toast.makeText(this, getString(R.string.empty_fields), Toast.LENGTH_LONG)
+                .show()
+        }
+    }
+
+    private fun goToMainActivity() {
+        val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 }

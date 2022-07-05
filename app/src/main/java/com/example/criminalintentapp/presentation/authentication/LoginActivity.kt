@@ -8,27 +8,31 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.databinding.ActivityLoginBinding
 import com.example.criminalintentapp.presentation.MainActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginActivity : AppCompatActivity() {
 
-    private val authenticationViewModel: AuthenticationViewModel by lazy {
+   /* private val authenticationViewModel: AuthenticationViewModel by lazy {
         ViewModelProvider(this).get(AuthenticationViewModel::class.java)
-    }
+    }*/
+
+    // Lazy Inject ViewModel
+    val myViewModel: AuthenticationViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (authenticationViewModel.currentUser != null) {
+       /* if (authenticationViewModel.currentUser != null) {
             goToMainActivity(false)
-        }
+        }*/
 
-        initViewModelObservers()
+       // initViewModelObservers()
         setOnClickListeners(binding)
     }
 
-    private fun initViewModelObservers() {
+   /* private fun initViewModelObservers() {
         authenticationViewModel.userLoginLiveData.observe(this) { user ->
             user?.let {
                 goToMainActivity(true)
@@ -39,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this, message, Toast.LENGTH_LONG)
                 .show()
         }
-    }
+    }*/
 
     private fun setOnClickListeners(binding: ActivityLoginBinding) {
         binding.tvSignUp.setOnClickListener {
@@ -48,11 +52,12 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnSignIn.setOnClickListener {
-            tryToLogin(binding)
+            //tryToLogin(binding)
+            myViewModel.login()
         }
     }
 
-    private fun tryToLogin(binding: ActivityLoginBinding) {
+   /* private fun tryToLogin(binding: ActivityLoginBinding) {
         val email = binding.etSignInEmail.text.toString()
         val password = binding.etSignInPassword.text.toString()
 
@@ -62,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.empty_fields), Toast.LENGTH_LONG)
                 .show()
         }
-    }
+    }*/
 
     private fun goToMainActivity(clearBackStack: Boolean) {
         val intent = Intent(this@LoginActivity, MainActivity::class.java)

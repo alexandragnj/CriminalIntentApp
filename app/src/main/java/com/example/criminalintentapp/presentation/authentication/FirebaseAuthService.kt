@@ -1,5 +1,7 @@
 package com.example.criminalintentapp.presentation.authentication
 
+import com.google.firebase.auth.FirebaseUser
+
 interface FirebaseAuthService {
-    fun login(email: String, password: String): Result<String,String>
+    suspend fun login(email: String, password: String): Result<Exception, FirebaseUser>
 }

@@ -28,22 +28,22 @@ class LoginActivity : AppCompatActivity() {
             goToMainActivity(false)
         }*/
 
-       // initViewModelObservers()
+        initViewModelObservers()
         setOnClickListeners(binding)
     }
 
-   /* private fun initViewModelObservers() {
-        authenticationViewModel.userLoginLiveData.observe(this) { user ->
+    private fun initViewModelObservers() {
+        myViewModel.userLoginLiveData.observe(this) { user ->
             user?.let {
                 goToMainActivity(true)
             }
         }
 
-        authenticationViewModel.failureLiveData.observe(this) { message ->
-            Toast.makeText(this, message, Toast.LENGTH_LONG)
-                .show()
-        }
-    }*/
+//        authenticationViewModel.failureLiveData.observe(this) { message ->
+//            Toast.makeText(this, message, Toast.LENGTH_LONG)
+//                .show()
+//        }
+    }
 
     private fun setOnClickListeners(binding: ActivityLoginBinding) {
         binding.tvSignUp.setOnClickListener {
@@ -53,7 +53,9 @@ class LoginActivity : AppCompatActivity() {
 
         binding.btnSignIn.setOnClickListener {
             //tryToLogin(binding)
-            myViewModel.login()
+            val email = binding.etSignInEmail.text.toString()
+            val pass = binding.etSignInPassword.text.toString()
+            myViewModel.login(email, pass)
         }
     }
 

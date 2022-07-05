@@ -2,8 +2,10 @@ package com.example.criminalintentapp.presentation.authentication
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.launch
 
 class AuthenticationViewModel(val service: FirebaseAuthService) : ViewModel() {
 
@@ -12,7 +14,15 @@ class AuthenticationViewModel(val service: FirebaseAuthService) : ViewModel() {
     var failureLiveData = MutableLiveData<String>()
     val currentUser = FirebaseAuth.getInstance().currentUser
 
-    fun login(email: String, password: String) = "${service.login(email, password)} from $this"
+    fun login(email: String, password: String) {
+        viewModelScope.launch {
+            service.login(email, password).onSuccess {
+                userLoginLiveData.value = it
+            }.onFailure {
+                failureLiveData.value = it.toString()
+            }
+        }
+    }
 
     fun register(emailSignUp: String, passwordSignUp: String) {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(

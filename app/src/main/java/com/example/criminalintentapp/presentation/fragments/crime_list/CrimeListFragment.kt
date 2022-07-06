@@ -11,14 +11,12 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.data.database.Crime
 import com.example.criminalintentapp.presentation.authentication.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {

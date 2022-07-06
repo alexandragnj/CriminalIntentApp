@@ -5,7 +5,7 @@ import com.example.criminalintentapp.data.database.Crime
 import com.example.criminalintentapp.data.database.CrimeDao
 import java.util.concurrent.Executors
 
-class CrimeRepository(val crimeDao: CrimeDao) {
+class CrimeRepository(private val crimeDao: CrimeDao) {
 
     private val executor = Executors.newSingleThreadExecutor()
 

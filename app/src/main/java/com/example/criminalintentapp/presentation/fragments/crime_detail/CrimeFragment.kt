@@ -26,7 +26,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
-import androidx.lifecycle.ViewModelProvider
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.getScaledBitmap
 import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment

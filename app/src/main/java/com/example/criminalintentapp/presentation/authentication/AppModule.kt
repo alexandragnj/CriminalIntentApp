@@ -1,7 +1,6 @@
 package com.example.criminalintentapp.presentation.authentication
 
 import androidx.room.Room
-import com.example.criminalintentapp.data.database.CrimeDao
 import com.example.criminalintentapp.data.database.CrimeDatabase
 import com.example.criminalintentapp.data.repository.CrimeRepository
 import com.example.criminalintentapp.presentation.fragments.crime_detail.CrimeDetailViewModel

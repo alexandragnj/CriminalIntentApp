@@ -18,6 +18,8 @@ import com.example.criminalintentapp.R
 import com.example.criminalintentapp.data.database.Crime
 import com.example.criminalintentapp.presentation.authentication.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
 
@@ -31,9 +33,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
     private lateinit var emptyListTextView: TextView
     private var adapter: CrimeAdapter = CrimeAdapter(emptyList())
 
-    private val crimeListViewModel: CrimeListViewModel by lazy {
-        ViewModelProvider(this).get(CrimeListViewModel::class.java)
-    }
+    private val crimeListViewModel: CrimeListViewModel by viewModel()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

@@ -5,7 +5,7 @@ import com.example.criminalintentapp.data.database.Crime
 import com.example.criminalintentapp.data.database.CrimeDao
 import java.util.concurrent.Executors
 
-class CrimeRepository private constructor(private val crimeDao: CrimeDao) {
+class CrimeRepository(val crimeDao: CrimeDao) {
 
     private val executor = Executors.newSingleThreadExecutor()
 
@@ -27,17 +27,5 @@ class CrimeRepository private constructor(private val crimeDao: CrimeDao) {
 
     companion object {
         const val DATABASE_NAME = "crime-database"
-
-        private var INSTANCE: CrimeRepository? = null
-
-        fun initialize(crimeDao: CrimeDao) {
-            if (INSTANCE == null) {
-                INSTANCE = CrimeRepository(crimeDao)
-            }
-        }
-
-        fun get(): CrimeRepository {
-            return INSTANCE ?: throw IllegalStateException("CrimeRepository must be initialize")
-        }
     }
 }

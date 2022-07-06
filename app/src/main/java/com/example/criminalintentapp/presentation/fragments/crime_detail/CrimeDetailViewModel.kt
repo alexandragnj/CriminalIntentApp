@@ -7,9 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.example.criminalintentapp.data.database.Crime
 import com.example.criminalintentapp.data.repository.CrimeRepository
 
-class CrimeDetailViewModel : ViewModel() {
+class CrimeDetailViewModel(val crimeRepository: CrimeRepository) : ViewModel() {
 
-    private val crimeRepository = CrimeRepository.get()
     private val crimeIdLiveData = MutableLiveData<Int>()
     var crime = Crime()
 

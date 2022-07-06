@@ -16,36 +16,23 @@ class AuthenticationViewModel(val service: FirebaseAuthService) : ViewModel() {
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            service.login(email, password).onSuccess {
-                userLoginLiveData.value = it
-            }.onFailure {
-                failureLiveData.value = it.toString()
+            service.login(email, password).onSuccess { user ->
+                userLoginLiveData.value = user
+            }.onFailure { exception ->
+                failureLiveData.value = exception.toString()
             }
         }
     }
 
-    fun register(emailSignUp: String, passwordSignUp: String) {
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(
-            emailSignUp,
-            passwordSignUp
-        ).addOnSuccessListener {
-            userRegisterLiveData.value = it.user
-        }.addOnFailureListener {
-            failureLiveData.value = it.message
+    fun register(email: String, password: String) {
+        viewModelScope.launch {
+            service.register(email, password).onSuccess { user ->
+                userRegisterLiveData.value = user
+            }.onFailure { exception ->
+                failureLiveData.value = exception.toString()
+            }
         }
     }
-
-    /*fun login(emailSignIn: String, passwordSignIn: String) {
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(
-            emailSignIn,
-            passwordSignIn
-        ).addOnSuccessListener {
-            userLoginLiveData.value = it.user
-        }.addOnFailureListener {
-            failureLiveData.value = it.message
-        }
-    }
-     */
 
     fun checkFields(email: String, password: String): Boolean {
         if (email == "" || password == "") {

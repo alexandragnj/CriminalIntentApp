@@ -26,11 +26,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
-import androidx.lifecycle.ViewModelProvider
 import com.example.criminalintentapp.R
-import com.example.criminalintentapp.getScaledBitmap
+import com.example.criminalintentapp.utils.getScaledBitmap
 import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
 class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener {
@@ -46,9 +46,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
     private lateinit var photoButton: ImageButton
     private lateinit var photoView: ImageView
 
-    private val crimeDetailViewModel: CrimeDetailViewModel by lazy {
-        ViewModelProvider(this).get(CrimeDetailViewModel::class.java)
-    }
+    val crimeDetailViewModel: CrimeDetailViewModel by viewModel()
 
     private val resultLauncherSuspect =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

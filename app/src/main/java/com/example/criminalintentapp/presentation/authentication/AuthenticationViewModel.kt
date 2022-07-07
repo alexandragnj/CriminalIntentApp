@@ -2,35 +2,38 @@ package com.example.criminalintentapp.presentation.authentication
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.criminalintentapp.services.FirebaseAuthService
+import com.example.criminalintentapp.utils.onFailure
+import com.example.criminalintentapp.utils.onSuccess
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.launch
 
-class AuthenticationViewModel : ViewModel() {
+class AuthenticationViewModel(val authService: FirebaseAuthService) : ViewModel() {
 
     var userRegisterLiveData = MutableLiveData<FirebaseUser>()
     var userLoginLiveData = MutableLiveData<FirebaseUser>()
     var failureLiveData = MutableLiveData<String>()
     val currentUser = FirebaseAuth.getInstance().currentUser
 
-    fun register(emailSignUp: String, passwordSignUp: String) {
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(
-            emailSignUp,
-            passwordSignUp
-        ).addOnSuccessListener {
-            userRegisterLiveData.value = it.user
-        }.addOnFailureListener {
-            failureLiveData.value = it.message
+    fun login(email: String, password: String) {
+        viewModelScope.launch {
+            authService.login(email, password).onSuccess { user ->
+                userLoginLiveData.value = user
+            }.onFailure { exception ->
+                failureLiveData.value = exception.toString()
+            }
         }
     }
 
-    fun login(emailSignIn: String, passwordSignIn: String) {
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(
-            emailSignIn,
-            passwordSignIn
-        ).addOnSuccessListener {
-            userLoginLiveData.value = it.user
-        }.addOnFailureListener {
-            failureLiveData.value = it.message
+    fun register(email: String, password: String) {
+        viewModelScope.launch {
+            authService.register(email, password).onSuccess { user ->
+                userRegisterLiveData.value = user
+            }.onFailure { exception ->
+                failureLiveData.value = exception.toString()
+            }
         }
     }
 

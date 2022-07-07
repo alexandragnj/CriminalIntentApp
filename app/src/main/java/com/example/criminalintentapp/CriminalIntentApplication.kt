@@ -1,8 +1,8 @@
 package com.example.criminalintentapp
 
 import android.app.Application
-import com.example.criminalintentapp.presentation.authentication.appModule
-import com.example.criminalintentapp.presentation.authentication.appModuleDB
+import com.example.criminalintentapp.utils.appModule
+import com.example.criminalintentapp.utils.appModuleDB
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin

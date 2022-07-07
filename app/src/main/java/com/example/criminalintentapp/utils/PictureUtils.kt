@@ -1,4 +1,4 @@
-package com.example.criminalintentapp
+package com.example.criminalintentapp.utils
 
 import android.app.Activity
 import android.graphics.Bitmap

@@ -27,7 +27,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import com.example.criminalintentapp.R
-import com.example.criminalintentapp.getScaledBitmap
+import com.example.criminalintentapp.utils.getScaledBitmap
 import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel

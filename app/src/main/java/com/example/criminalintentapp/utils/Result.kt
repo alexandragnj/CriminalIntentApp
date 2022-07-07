@@ -1,4 +1,4 @@
-package com.example.criminalintentapp.presentation.authentication
+package com.example.criminalintentapp.utils
 
 sealed class Result<out Error, out Value> {
     data class Failure<out Error>(val error: Error) : Result<Error, Nothing>()

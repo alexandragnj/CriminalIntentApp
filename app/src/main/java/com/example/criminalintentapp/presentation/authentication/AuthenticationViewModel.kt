@@ -3,11 +3,14 @@ package com.example.criminalintentapp.presentation.authentication
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.criminalintentapp.services.FirebaseAuthService
+import com.example.criminalintentapp.utils.onFailure
+import com.example.criminalintentapp.utils.onSuccess
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
-class AuthenticationViewModel(val service: FirebaseAuthService) : ViewModel() {
+class AuthenticationViewModel(val authService: FirebaseAuthService) : ViewModel() {
 
     var userRegisterLiveData = MutableLiveData<FirebaseUser>()
     var userLoginLiveData = MutableLiveData<FirebaseUser>()
@@ -16,7 +19,7 @@ class AuthenticationViewModel(val service: FirebaseAuthService) : ViewModel() {
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            service.login(email, password).onSuccess { user ->
+            authService.login(email, password).onSuccess { user ->
                 userLoginLiveData.value = user
             }.onFailure { exception ->
                 failureLiveData.value = exception.toString()
@@ -26,7 +29,7 @@ class AuthenticationViewModel(val service: FirebaseAuthService) : ViewModel() {
 
     fun register(email: String, password: String) {
         viewModelScope.launch {
-            service.register(email, password).onSuccess { user ->
+            authService.register(email, password).onSuccess { user ->
                 userRegisterLiveData.value = user
             }.onFailure { exception ->
                 failureLiveData.value = exception.toString()

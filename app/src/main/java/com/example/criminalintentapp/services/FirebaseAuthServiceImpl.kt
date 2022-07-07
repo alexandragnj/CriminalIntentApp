@@ -1,16 +1,15 @@
-package com.example.criminalintentapp.presentation.authentication
+package com.example.criminalintentapp.services
 
-import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.tasks.await
+import com.example.criminalintentapp.utils.Result
 
 class FirebaseAuthServiceImpl : FirebaseAuthService {
 
     override suspend fun login(email: String, password: String): Result<Exception, FirebaseUser> {
-        Log.d("Service", "Login success")
         val task = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
         val result = task.await()
         return handleResult(task, result)
@@ -20,7 +19,6 @@ class FirebaseAuthServiceImpl : FirebaseAuthService {
         email: String,
         password: String
     ): Result<Exception, FirebaseUser> {
-        Log.d("Service", "Register success")
         val task = FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
         val result = task.await()
         return handleResult(task, result)

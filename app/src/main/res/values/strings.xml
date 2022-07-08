@@ -33,5 +33,7 @@
     <string name="welcome_to_criminalintent">Welcome to CriminalIntent!</string>
     <string name="create_an_account">Create an account</string>
     <string name="empty_fields">Complete the Email and Password fields</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

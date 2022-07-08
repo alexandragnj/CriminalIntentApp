@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.criminalintentapp.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_crimeListFragment"
+            app:destination="@id/crimeListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.criminalintentapp.RegisterFragment"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_registerFragment_to_crimeListFragment"
+            app:destination="@id/crimeListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/crimeListFragment"
+        android:name="com.example.criminalintentapp.presentation.fragments.crime_list.CrimeListFragment"
+        android:label="CrimeListFragment" >
+        <action
+            android:id="@+id/action_crimeListFragment_to_crimeFragment"
+            app:destination="@id/crimeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/crimeFragment"
+        android:name="com.example.criminalintentapp.presentation.fragments.crime_detail.CrimeFragment"
+        android:label="CrimeFragment" >
+        <action
+            android:id="@+id/action_crimeFragment_to_crimeListFragment"
+            app:destination="@id/crimeListFragment" />
+    </fragment>
+</navigation>

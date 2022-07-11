@@ -1,7 +1,5 @@
 package com.example.criminalintentapp.presentation.fragments.crime_list
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -11,32 +9,22 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.data.database.Crime
-import com.example.criminalintentapp.presentation.authentication.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
 
-    interface Callbacks {
-        fun onCrimeSelected(crimeId: Int)
-    }
-
-    var callbacks: Callbacks? = null
-
     private lateinit var crimeRecyclerView: RecyclerView
     private lateinit var emptyListTextView: TextView
     private var adapter: CrimeAdapter = CrimeAdapter(emptyList())
+    private var bundle = Bundle()
 
     private val crimeListViewModel: CrimeListViewModel by viewModel()
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        callbacks = context as Callbacks?
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,11 +44,6 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_crime_list, menu)
@@ -70,15 +53,16 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         return when (item.itemId) {
             R.id.new_crime -> {
                 val crime = Crime()
-                callbacks?.onCrimeSelected(crime.id)
+                bundle.putInt("crime_id", crime.id)
+                NavHostFragment.findNavController(this@CrimeListFragment)
+                    .navigate(R.id.action_crimeListFragment_to_crimeFragment, bundle)
                 true
             }
 
             R.id.logout -> {
                 FirebaseAuth.getInstance().signOut()
-                val intent=Intent(context, LoginActivity::class.java)
-                startActivity(intent)
-                activity?.finish()
+                NavHostFragment.findNavController(this)
+                    .navigate(R.id.action_crimeListFragment_to_loginFragment)
                 true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -97,16 +81,14 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         crimeRecyclerView.adapter = adapter
         adapter.setOnClickListener(object : CrimeAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
-                callbacks?.onCrimeSelected(crimes[position].id)
+                bundle.putInt("crime_id", crimes[position].id)
+                NavHostFragment.findNavController(this@CrimeListFragment)
+                    .navigate(R.id.action_crimeListFragment_to_crimeFragment, bundle)
             }
         })
     }
 
     companion object {
         private const val TAG = "CrimeListFragment"
-
-        fun newInstance(): CrimeListFragment {
-            return CrimeListFragment()
-        }
     }
 }

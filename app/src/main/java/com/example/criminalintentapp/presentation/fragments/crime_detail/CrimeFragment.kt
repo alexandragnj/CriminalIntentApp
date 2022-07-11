@@ -26,6 +26,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
+import androidx.navigation.fragment.NavHostFragment
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.utils.getScaledBitmap
 import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment
@@ -344,7 +345,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                     R.string.dialog_negative_button
                 ) { _, _ ->
                     temporaryFile.delete()
-                    activity?.supportFragmentManager?.popBackStack()
+                    NavHostFragment.findNavController(this).navigate(R.id.action_crimeFragment_to_crimeListFragment)
                 }
                 .setPositiveButton(
                     R.string.dialog_positive_button

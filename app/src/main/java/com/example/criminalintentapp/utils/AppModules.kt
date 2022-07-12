@@ -4,7 +4,7 @@ import androidx.room.Room
 import com.example.criminalintentapp.data.database.CrimeDatabase
 import com.example.criminalintentapp.data.database.migration_1_2
 import com.example.criminalintentapp.data.repository.CrimeRepository
-import com.example.criminalintentapp.presentation.authentication.AuthenticationViewModel
+import com.example.criminalintentapp.presentation.fragments.authentication.AuthenticationViewModel
 import com.example.criminalintentapp.presentation.fragments.crime_detail.CrimeDetailViewModel
 import com.example.criminalintentapp.presentation.fragments.crime_list.CrimeListViewModel
 import com.example.criminalintentapp.services.FirebaseAuthService

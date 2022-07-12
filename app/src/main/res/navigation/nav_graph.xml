@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.criminalintentapp.presentation.authentication.LoginFragment"
+        android:name="com.example.criminalintentapp.presentation.fragments.authentication.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -21,7 +21,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.criminalintentapp.presentation.authentication.RegisterFragment"
+        android:name="com.example.criminalintentapp.presentation.fragments.authentication.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
@@ -30,6 +30,7 @@
         <action
             android:id="@+id/action_registerFragment_to_crimeListFragment"
             app:destination="@id/crimeListFragment"
+            app:launchSingleTop="false"
             app:popUpTo="@id/navigation"
             app:popUpToInclusive="true" />
     </fragment>

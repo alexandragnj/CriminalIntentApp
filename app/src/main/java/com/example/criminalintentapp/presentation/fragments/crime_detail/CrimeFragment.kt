@@ -14,12 +14,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.format.DateFormat
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
+import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,6 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.navigation.fragment.NavHostFragment
 import com.example.criminalintentapp.R
+import com.example.criminalintentapp.databinding.FragmentCrimeBinding
 import com.example.criminalintentapp.utils.getScaledBitmap
 import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -38,14 +36,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
 
     private lateinit var temporaryFile: File
     private lateinit var temporaryUri: Uri
-    private lateinit var titleField: EditText
-    private lateinit var dateButton: Button
-    private lateinit var solvedCheckBox: CheckBox
-    private lateinit var saveButton: Button
-    private lateinit var reportButton: Button
-    private lateinit var suspectButton: Button
-    private lateinit var photoButton: ImageButton
-    private lateinit var photoView: ImageView
+    private lateinit var binding: FragmentCrimeBinding
 
     val crimeDetailViewModel: CrimeDetailViewModel by viewModel()
 
@@ -59,6 +50,16 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             onActivityResultPhoto(result)
         }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentCrimeBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(
@@ -70,7 +71,6 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             }
         )
 
-        bindViews(view)
         setTextWatcher()
 
         temporaryFile = File(context?.applicationContext?.filesDir, "temporary_file")
@@ -136,23 +136,23 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             }
         }
 
-        titleField.addTextChangedListener(titleWatcher)
+        binding.crimeTitle.addTextChangedListener(titleWatcher)
     }
 
     private fun setClickListeners() {
-        solvedCheckBox.apply {
+        binding.crimeSolved.apply {
             setOnCheckedChangeListener { _, isChecked ->
                 crimeDetailViewModel.crime.isSolved = isChecked
             }
         }
 
-        dateButton.setOnClickListener {
+        binding.crimeDate.setOnClickListener {
             DatePickerFragment.newInstance(crimeDetailViewModel.crime.date, REQUEST_DATE).apply {
                 show(this@CrimeFragment.childFragmentManager, REQUEST_DATE)
             }
         }
 
-        saveButton.setOnClickListener {
+        binding.crimeSave.setOnClickListener {
             temporaryFile.renameTo(
                 File(
                     context?.applicationContext?.filesDir,
@@ -170,15 +170,15 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             Log.d(TAG, "suspect: ${crimeDetailViewModel.crime.suspect}")
         }
 
-        reportButton.setOnClickListener {
+        binding.crimeReport.setOnClickListener {
             sendReport()
         }
 
-        suspectButton.setOnClickListener {
+        binding.crimeSuspect.setOnClickListener {
             setIntentSuspect()
         }
 
-        photoButton.setOnClickListener {
+        binding.crimeCamera.setOnClickListener {
             takePhoto()
         }
     }
@@ -207,14 +207,14 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
     }
 
     private fun updateUI() {
-        titleField.setText(crimeDetailViewModel.crime.title)
-        dateButton.text = crimeDetailViewModel.crime.date.toString()
-        solvedCheckBox.apply {
+        binding.crimeTitle.setText(crimeDetailViewModel.crime.title)
+        binding.crimeDate.text = crimeDetailViewModel.crime.date.toString()
+        binding.crimeSolved.apply {
             isChecked = crimeDetailViewModel.crime.isSolved
             jumpDrawablesToCurrentState()
         }
         if (crimeDetailViewModel.crime.suspect.isNotEmpty()) {
-            suspectButton.text = crimeDetailViewModel.crime.suspect
+            binding.crimeSuspect.text = crimeDetailViewModel.crime.suspect
         }
 
         val photoFile =
@@ -226,14 +226,15 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         var bitmap: Bitmap? = null
         when {
             photoFile.exists() -> bitmap = getScaledBitmap(photoFile.path, requireActivity())
-            temporaryFile.exists() -> bitmap = getScaledBitmap(temporaryFile.path, requireActivity())
+            temporaryFile.exists() -> bitmap =
+                getScaledBitmap(temporaryFile.path, requireActivity())
         }
         updatePhotoViewProperties(bitmap)
     }
 
     private fun updatePhotoViewProperties(bitmap: Bitmap?) {
-        photoView.setImageBitmap(bitmap)
-        photoView.contentDescription = getString(R.string.crime_photo_image_description)
+        binding.crimePhoto.setImageBitmap(bitmap)
+        binding.crimePhoto.contentDescription = getString(R.string.crime_photo_image_description)
     }
 
     private fun getCrimeReport(): String {
@@ -296,7 +297,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         cursor.moveToFirst()
         val suspect = cursor.getString(0)
         crimeDetailViewModel.crime.suspect = suspect
-        suspectButton.text = suspect
+        binding.crimeSuspect.text = suspect
     }
 
     private fun setIntentSuspect() {
@@ -325,17 +326,6 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         resultLauncherPhoto.launch(captureImage)
     }
 
-    private fun bindViews(view: View) {
-        titleField = view.findViewById(R.id.crime_title) as EditText
-        dateButton = view.findViewById(R.id.crime_date) as Button
-        solvedCheckBox = view.findViewById(R.id.crime_solved) as CheckBox
-        saveButton = view.findViewById(R.id.crime_save) as Button
-        reportButton = view.findViewById(R.id.crime_report) as Button
-        suspectButton = view.findViewById(R.id.crime_suspect) as Button
-        photoButton = view.findViewById(R.id.crime_camera) as ImageButton
-        photoView = view.findViewById(R.id.crime_photo) as ImageView
-    }
-
     private fun showAlertDialog() {
         context?.let {
             MaterialAlertDialogBuilder(it)
@@ -345,7 +335,8 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                     R.string.dialog_negative_button
                 ) { _, _ ->
                     temporaryFile.delete()
-                    NavHostFragment.findNavController(this).navigate(R.id.action_crimeFragment_to_crimeListFragment)
+                    NavHostFragment.findNavController(this)
+                        .navigate(R.id.action_crimeFragment_to_crimeListFragment)
                 }
                 .setPositiveButton(
                     R.string.dialog_positive_button
@@ -360,14 +351,5 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         private const val TAG = "CrimeFragment"
         private const val DATE_FORMAT = "EEE, MMM, dd"
         private const val AUTHORITY = "com.example.criminalintentapp.fileprovider"
-
-        fun newInstance(crimeId: Int): CrimeFragment {
-            val args = Bundle().apply {
-                putSerializable(ARG_CRIME_ID, crimeId)
-            }
-            return CrimeFragment().apply {
-                arguments = args
-            }
-        }
     }
 }

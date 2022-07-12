@@ -1,4 +1,4 @@
-package com.example.criminalintentapp.presentation.authentication
+package com.example.criminalintentapp.presentation.fragments.authentication
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -14,22 +14,27 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
 
+    private lateinit var binding: FragmentLoginBinding
     private val authenticationViewModel: AuthenticationViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding= FragmentLoginBinding.inflate(inflater, container,false)
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         if (authenticationViewModel.currentUser != null) {
             goToCrimeList()
         }
 
         initViewModelObservers()
-        setOnClickListeners(binding)
-
-        return binding.root
+        setOnClickListeners()
     }
 
     private fun initViewModelObservers() {
@@ -45,17 +50,18 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun setOnClickListeners(binding: FragmentLoginBinding) {
+    private fun setOnClickListeners() {
         binding.tvSignUp.setOnClickListener {
-            Navigation.findNavController(binding.root).navigate(R.id.action_loginFragment_to_registerFragment)
+            Navigation.findNavController(binding.root)
+                .navigate(R.id.action_loginFragment_to_registerFragment)
         }
 
         binding.btnSignIn.setOnClickListener {
-            tryToLogin(binding)
+            tryToLogin()
         }
     }
 
-    private fun tryToLogin(binding: FragmentLoginBinding) {
+    private fun tryToLogin() {
         val email = binding.etSignInEmail.text.toString()
         val password = binding.etSignInPassword.text.toString()
 
@@ -68,6 +74,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun goToCrimeList() {
-        NavHostFragment.findNavController(this).navigate(R.id.action_loginFragment_to_crimeListFragment)
+        NavHostFragment.findNavController(this)
+            .navigate(R.id.action_loginFragment_to_crimeListFragment)
     }
 }

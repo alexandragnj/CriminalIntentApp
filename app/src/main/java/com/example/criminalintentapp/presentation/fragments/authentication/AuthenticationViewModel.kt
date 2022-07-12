@@ -1,4 +1,4 @@
-package com.example.criminalintentapp.presentation.authentication
+package com.example.criminalintentapp.presentation.fragments.authentication
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

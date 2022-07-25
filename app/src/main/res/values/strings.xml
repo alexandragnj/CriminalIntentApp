@@ -34,4 +34,10 @@
     <string name="create_an_account">Create an account</string>
     <string name="empty_fields">Complete the Email and Password fields</string>
 
+
+    <string name="facebook_app_id">1655134208193463</string>
+    <string name="fb_login_protocol_scheme">fb1655134208193463</string>
+    <string name="facebook_client_token">5de2cf361345b155e0ee9dbc1849236b</string>
+    <string name="continue_with_google">Continue with Google</string>
+
 </resources>

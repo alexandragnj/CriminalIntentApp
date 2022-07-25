@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.authentication.LoginActivity">
+    android:background="@color/turquoise_dark_background"
+    tools:context=".presentation.fragments.authentication.LoginFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,48 +17,63 @@
             android:layout_height="150dp"
             android:layout_gravity="center"
             android:layout_marginBottom="30dp"
-            android:src="@drawable/criminalintent_image" />
+            android:src="@drawable/ic_criminalintent" />
 
-        <TextView
+        <com.example.criminalintentapp.utils.FontTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/create_an_account"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@color/turquoise_dark1"/>
 
         <EditText
             android:id="@+id/et_signUp_email"
             android:layout_width="250dp"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
+            android:background="@drawable/edittext_background"
             android:hint="@string/email"
+            android:textColorHint="@color/turquoise_dark1"
+            android:textColor="@color/turquoise"
+            android:gravity="center"
+            android:drawableStart="@drawable/ic_person_svgrepo_com"
             android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/et_signUp_password"
             android:layout_width="250dp"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
+            android:background="@drawable/edittext_background"
             android:hint="@string/password"
+            android:textColorHint="@color/turquoise_dark1"
+            android:textColor="@color/turquoise"
+            android:gravity="center"
+            android:drawableStart="@drawable/ic_lock_svgrepo_com"
             android:inputType="textPassword" />
 
-        <Button
+        <com.example.criminalintentapp.utils.FontButton
             android:id="@+id/btn_signUp"
-            android:layout_width="250dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:text="@string/register" />
+            android:text="@string/register"
+            android:textColor="@color/turquoise"
+            android:textSize="17sp"
+            android:background="@drawable/button_background"/>
 
         <TextView
             android:id="@+id/tv_signIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/have_an_account_sign_in" />
+            android:text="@string/have_an_account_sign_in"
+            android:textColor="@color/turquoise_dark1"/>
     </LinearLayout>
 
 </ScrollView>

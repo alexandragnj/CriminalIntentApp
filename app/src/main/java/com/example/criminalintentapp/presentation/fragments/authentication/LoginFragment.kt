@@ -115,7 +115,7 @@ class LoginFragment : Fragment() {
     private fun facebookLogin() {
         callbackManager = CallbackManager.Factory.create()
 
-        binding.btnFacebook.setReadPermissions("email", "public_profile")
+        binding.btnFacebook.setReadPermissions("email", "public_profile", "user_friends")
         binding.btnFacebook.registerCallback(callbackManager, object :
             FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult) {

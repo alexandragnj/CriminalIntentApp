@@ -71,6 +71,6 @@ class RegisterFragment : Fragment() {
 
     private fun goToCrimeList() {
         NavHostFragment.findNavController(this)
-            .navigate(R.id.action_loginFragment_to_crimeListFragment)
+            .navigate(R.id.action_registerFragment_to_crimeListFragment)
     }
 }

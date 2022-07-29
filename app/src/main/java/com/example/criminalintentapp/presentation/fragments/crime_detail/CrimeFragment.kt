@@ -12,7 +12,6 @@ import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.text.format.DateFormat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -27,11 +26,14 @@ import androidx.fragment.app.FragmentResultListener
 import androidx.navigation.fragment.NavHostFragment
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.databinding.FragmentCrimeBinding
-import com.example.criminalintentapp.utils.getScaledBitmap
 import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment
+import com.example.criminalintentapp.presentation.dialogs.TimePickerFragment
+import com.example.criminalintentapp.utils.getScaledBitmap
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener {
 
@@ -87,6 +89,11 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             viewLifecycleOwner,
             this
         )
+        childFragmentManager.setFragmentResultListener(
+            REQUEST_TIME,
+            viewLifecycleOwner,
+            this
+        )
         crimeDetailViewModel.crimeLiveData.observe(
             viewLifecycleOwner
         ) { crime ->
@@ -108,7 +115,13 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         when (requestCode) {
             REQUEST_DATE -> {
                 Log.d(TAG, "RECEIVED RESULT FOR $requestCode")
-                crimeDetailViewModel.crime.date = DatePickerFragment.getSelectedDate(result)
+                crimeDetailViewModel.crime.date =
+                    DatePickerFragment.getSelectedDate(result) as String
+            }
+            REQUEST_TIME -> {
+                Log.d(TAG, "RECEIVED RESULT FOR $requestCode")
+                crimeDetailViewModel.crime.time =
+                    TimePickerFragment.getSelectedTime(result) as String
             }
         }
     }
@@ -149,8 +162,14 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         }
 
         binding.crimeDate.setOnClickListener {
-            DatePickerFragment.newInstance(crimeDetailViewModel.crime.date, REQUEST_DATE).apply {
+            DatePickerFragment.newInstance(REQUEST_DATE).apply {
                 show(this@CrimeFragment.childFragmentManager, REQUEST_DATE)
+            }
+        }
+
+        binding.crimeTime.setOnClickListener {
+            TimePickerFragment.newInstance(REQUEST_TIME).apply {
+                show(this@CrimeFragment.childFragmentManager, REQUEST_TIME)
             }
         }
 
@@ -210,7 +229,18 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
 
     private fun updateUI() {
         binding.crimeTitle.setText(crimeDetailViewModel.crime.title)
-        binding.crimeDate.text = crimeDetailViewModel.crime.date.toString()
+        binding.crimeDate.text = crimeDetailViewModel.crime.date
+        if (crimeDetailViewModel.crime.date.isEmpty()) {
+            val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
+            val date = sdf.format(Date())
+            binding.crimeDate.text = date
+        }
+        binding.crimeTime.text = crimeDetailViewModel.crime.time
+        if (crimeDetailViewModel.crime.time.isEmpty()) {
+            val sdf = SimpleDateFormat("h:mm a", Locale.ENGLISH)
+            val date = sdf.format(Date())
+            binding.crimeTime.text = date
+        }
         binding.crimeSolved.apply {
             isChecked = crimeDetailViewModel.crime.isSolved
             jumpDrawablesToCurrentState()
@@ -246,7 +276,9 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             getString(R.string.crime_report_unsolved)
         }
 
-        val dateString = DateFormat.format(DATE_FORMAT, crimeDetailViewModel.crime.date).toString()
+        //val dateString = DateFormat.format(DATE_FORMAT, crimeDetailViewModel.crime.date).toString()
+        val dateString =
+            SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH).format(crimeDetailViewModel.crime.date)
         val suspect = if (crimeDetailViewModel.crime.suspect.isBlank()) {
             getString(R.string.crime_report_no_suspect)
         } else {
@@ -350,6 +382,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
     companion object {
         private const val ARG_CRIME_ID = "crime_id"
         private const val REQUEST_DATE = "DialogDate"
+        private const val REQUEST_TIME = "DialogTime"
         private const val TAG = "CrimeFragment"
         private const val DATE_FORMAT = "EEE, MMM, dd"
         private const val AUTHORITY = "com.example.criminalintentapp.fileprovider"

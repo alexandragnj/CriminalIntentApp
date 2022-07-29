@@ -183,10 +183,14 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
 
             if (crimeDetailViewModel.crimeLiveData.value == null) {
                 crimeDetailViewModel.addCrime(crimeDetailViewModel.crime)
-                activity?.supportFragmentManager?.popBackStack()
+                //activity?.supportFragmentManager?.popBackStack()
+                NavHostFragment.findNavController(this@CrimeFragment)
+                    .navigate(R.id.action_crimeFragment_to_crimeListFragment)
             } else {
                 crimeDetailViewModel.saveCrime(crimeDetailViewModel.crime)
-                activity?.supportFragmentManager?.popBackStack()
+                //activity?.supportFragmentManager?.popBackStack()
+                NavHostFragment.findNavController(this@CrimeFragment)
+                    .navigate(R.id.action_crimeFragment_to_crimeListFragment)
             }
             Log.d(TAG, "suspect: ${crimeDetailViewModel.crime.suspect}")
         }

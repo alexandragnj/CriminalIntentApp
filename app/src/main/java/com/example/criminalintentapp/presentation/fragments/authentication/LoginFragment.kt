@@ -13,6 +13,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.databinding.FragmentLoginBinding
+import com.example.criminalintentapp.presentation.dialogs.ProgressDialog
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -33,6 +34,7 @@ class LoginFragment : Fragment() {
     private lateinit var callbackManager: CallbackManager
     private lateinit var googleSignInClient: GoogleSignInClient
     private val authenticationViewModel: AuthenticationViewModel by viewModel()
+    private lateinit var progressDialog: ProgressDialog
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -68,6 +70,8 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+
+        progressDialog = ProgressDialog(requireActivity())
 
         if (authenticationViewModel.currentUser != null) {
             goToCrimeList()
@@ -162,6 +166,7 @@ class LoginFragment : Fragment() {
         }
 
         authenticationViewModel.failureLiveData.observe(viewLifecycleOwner) { message ->
+            progressDialog.hideProgressDialog()
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG)
                 .show()
         }
@@ -183,6 +188,7 @@ class LoginFragment : Fragment() {
         val password = binding.etSignInPassword.text.toString()
 
         if (authenticationViewModel.checkFields(email, password)) {
+            progressDialog.showProgressDialog()
             authenticationViewModel.login(email, password)
         } else {
             Toast.makeText(requireContext(), getString(R.string.empty_fields), Toast.LENGTH_LONG)
@@ -191,6 +197,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun goToCrimeList() {
+        progressDialog.hideProgressDialog()
         NavHostFragment.findNavController(this)
             .navigate(R.id.action_loginFragment_to_crimeListFragment)
     }

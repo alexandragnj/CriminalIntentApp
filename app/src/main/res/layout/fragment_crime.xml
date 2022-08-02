@@ -96,7 +96,7 @@
             android:layout_marginBottom="16dp"
             android:background="@color/turquoise" />
 
-        <com.example.criminalintentapp.utils.FontButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/crime_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
             android:textColor="@color/turquoise"
             tools:text="Wed Nov 14 11:56 EST 2018" />
 
-        <com.example.criminalintentapp.utils.FontButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/crime_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
             android:text="@string/crime_solved_label"
             android:textColor="@color/turquoise_dark1" />
 
-        <com.example.criminalintentapp.utils.FontButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/crime_suspect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -137,7 +137,7 @@
             android:text="@string/crime_suspect_text"
             android:textColor="@color/turquoise" />
 
-        <com.example.criminalintentapp.utils.FontButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/crime_report"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -148,7 +148,7 @@
             android:text="@string/crime_report_text"
             android:textColor="@color/turquoise" />
 
-        <com.example.criminalintentapp.utils.FontButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/crime_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

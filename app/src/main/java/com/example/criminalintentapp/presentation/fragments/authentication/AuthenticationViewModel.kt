@@ -3,6 +3,7 @@ package com.example.criminalintentapp.presentation.fragments.authentication
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.criminalintentapp.presentation.dialogs.ProgressDialog
 import com.example.criminalintentapp.services.FirebaseAuthService
 import com.example.criminalintentapp.utils.onFailure
 import com.example.criminalintentapp.utils.onSuccess

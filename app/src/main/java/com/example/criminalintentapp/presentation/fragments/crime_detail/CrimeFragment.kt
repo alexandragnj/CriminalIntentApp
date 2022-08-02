@@ -238,12 +238,14 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
             val date = sdf.format(Date())
             binding.crimeDate.text = date
+            crimeDetailViewModel.crime.date = date
         }
         binding.crimeTime.text = crimeDetailViewModel.crime.time
         if (crimeDetailViewModel.crime.time.isEmpty()) {
             val sdf = SimpleDateFormat("h:mm a", Locale.ENGLISH)
             val date = sdf.format(Date())
             binding.crimeTime.text = date
+            crimeDetailViewModel.crime.time = date
         }
         binding.crimeSolved.apply {
             isChecked = crimeDetailViewModel.crime.isSolved

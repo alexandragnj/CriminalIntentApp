@@ -31,6 +31,7 @@ class CrimeAdapter(var crimes: List<Crime>) :
         private val titleTextView: TextView = itemView.findViewById(R.id.crime_title)
         private val dateTextView: TextView = itemView.findViewById(R.id.crime_date)
         private val solvedImageView: ImageView = itemView.findViewById(R.id.crime_solved)
+        private val timeTextView: TextView = itemView.findViewById(R.id.crime_time)
 
         init {
             itemView.setOnClickListener {
@@ -41,7 +42,8 @@ class CrimeAdapter(var crimes: List<Crime>) :
         fun bind(crime: Crime) {
             this.crime = crime
             titleTextView.text = this.crime.title
-            dateTextView.text = this.crime.date.toString()
+            dateTextView.text = this.crime.date
+            timeTextView.text = this.crime.time
             solvedImageView.visibility = if (crime.isSolved) {
                 View.VISIBLE
             } else {

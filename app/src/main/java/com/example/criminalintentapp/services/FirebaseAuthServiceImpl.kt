@@ -1,11 +1,12 @@
 package com.example.criminalintentapp.services
 
+import android.util.Log
+import android.widget.Toast
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.tasks.await
 import com.example.criminalintentapp.utils.Result
+import com.example.criminalintentapp.utils.onFailure
+import com.google.firebase.auth.*
 
 class FirebaseAuthServiceImpl : FirebaseAuthService {
 
@@ -19,9 +20,15 @@ class FirebaseAuthServiceImpl : FirebaseAuthService {
         email: String,
         password: String
     ): Result<Exception, FirebaseUser> {
-        val task = FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-        val result = task.await()
-        return handleResult(task, result)
+        return try {
+            val task = FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+            val result = task.await()
+
+            handleResult(task, result)
+        }catch (e: FirebaseAuthUserCollisionException){
+            Result.Failure(e)
+        }
+
     }
 
     private fun handleResult(

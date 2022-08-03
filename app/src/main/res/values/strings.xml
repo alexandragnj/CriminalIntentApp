@@ -27,13 +27,14 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="no_account_sign_up">No account? Sign up!</string>
+    <string name="no_account">No account?</string>
+    <string name="sign_up"><u>Sign up!</u></string>
+    <string name="sign_in"><u>Sign in!</u></string>
     <string name="register">Register</string>
-    <string name="have_an_account_sign_in">Have an account? Sign in!</string>
+    <string name="have_an_account">Have an account?</string>
     <string name="welcome_to_criminalintent">Welcome to CriminalIntent!</string>
     <string name="create_an_account">Create an account</string>
     <string name="empty_fields">Complete the Email and Password fields</string>
-
 
     <string name="facebook_app_id">1655134208193463</string>
     <string name="fb_login_protocol_scheme">fb1655134208193463</string>

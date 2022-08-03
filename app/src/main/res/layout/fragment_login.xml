@@ -88,16 +88,30 @@
         app:layout_constraintTop_toBottomOf="@+id/et_signIn_password" />
 
     <TextView
-        android:id="@+id/tv_signUp"
-        android:layout_width="match_parent"
+        android:id="@+id/tv_no_account"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="@string/no_account_sign_up"
+        android:text="@string/no_account"
+        android:textColor="@color/turquoise_dark1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.411"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_signIn" />
+
+    <TextView
+        android:id="@+id/tv_signUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="@string/sign_up"
         android:textColor="@color/turquoise_dark1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_no_account"
         app:layout_constraintTop_toBottomOf="@+id/btn_signIn" />
 
     <com.facebook.login.widget.LoginButton

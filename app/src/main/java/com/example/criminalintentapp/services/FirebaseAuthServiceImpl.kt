@@ -1,19 +1,20 @@
 package com.example.criminalintentapp.services
 
-import android.util.Log
-import android.widget.Toast
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.tasks.await
 import com.example.criminalintentapp.utils.Result
-import com.example.criminalintentapp.utils.onFailure
 import com.google.firebase.auth.*
 
 class FirebaseAuthServiceImpl : FirebaseAuthService {
 
     override suspend fun login(email: String, password: String): Result<Exception, FirebaseUser> {
-        val task = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
-        val result = task.await()
-        return handleResult(task, result)
+        return try {
+            val task = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+            val result = task.await()
+            handleResult(task, result)
+        } catch (e: FirebaseAuthException) {
+            Result.Failure(e)
+        }
     }
 
     override suspend fun register(
@@ -23,9 +24,8 @@ class FirebaseAuthServiceImpl : FirebaseAuthService {
         return try {
             val task = FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             val result = task.await()
-
             handleResult(task, result)
-        }catch (e: FirebaseAuthUserCollisionException){
+        } catch (e: FirebaseAuthException) {
             Result.Failure(e)
         }
 

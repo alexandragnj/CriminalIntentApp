@@ -1,7 +1,6 @@
 package com.example.criminalintentapp.presentation.fragments.authentication
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,6 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.databinding.FragmentRegisterBinding
 import com.example.criminalintentapp.presentation.dialogs.ProgressDialog
-import com.google.firebase.auth.FirebaseAuth
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RegisterFragment : Fragment() {
@@ -64,23 +62,12 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    fun checkEmail(email: String) {
-        FirebaseAuth.getInstance().fetchSignInMethodsForEmail(email)
-            .addOnCompleteListener { task ->
-                if (task.result.signInMethods?.size != 0) {
-                    Toast.makeText(requireContext(), "Email already exists.", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }
-    }
-
     private fun tryToRegister() {
         val email = binding.etSignUpEmail.text.toString()
         val password = binding.etSignUpPassword.text.toString()
 
         if (authenticationViewModel.checkFields(email, password)) {
             progressDialog.showProgressDialog()
-            //checkEmail(email)
             authenticationViewModel.register(email, password)
         } else {
             Toast.makeText(requireContext(), getString(R.string.empty_fields), Toast.LENGTH_LONG)

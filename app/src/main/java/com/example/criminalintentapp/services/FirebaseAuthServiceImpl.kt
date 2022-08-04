@@ -28,7 +28,12 @@ class FirebaseAuthServiceImpl : FirebaseAuthService {
         } catch (e: FirebaseAuthException) {
             Result.Failure(e)
         }
+    }
 
+    override suspend fun facebookAndGoogle(credential: AuthCredential): Result<Exception, FirebaseUser> {
+        val task = FirebaseAuth.getInstance().signInWithCredential(credential)
+        val result = task.await()
+        return handleResult(task, result)
     }
 
     private fun handleResult(

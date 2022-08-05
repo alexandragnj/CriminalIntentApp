@@ -78,7 +78,7 @@ class LoginFragment : Fragment() {
 
     private fun signInWithGoogle() {
         val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        startActivityForResult(signInIntent, REQUEST_CODE_GOOGLE_SIGN_IN)
 
     }
 
@@ -136,6 +136,6 @@ class LoginFragment : Fragment() {
 
     companion object {
         const val TAG = "LoginFragment"
-        private const val RC_SIGN_IN = 120
+        private const val REQUEST_CODE_GOOGLE_SIGN_IN = 120
     }
 }

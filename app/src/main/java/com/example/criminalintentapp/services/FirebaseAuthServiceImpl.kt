@@ -30,7 +30,7 @@ class FirebaseAuthServiceImpl : FirebaseAuthService {
         }
     }
 
-    override suspend fun facebookAndGoogle(credential: AuthCredential): Result<Exception, FirebaseUser> {
+    override suspend fun singInWithFacebookOrGoogle(credential: AuthCredential): Result<Exception, FirebaseUser> {
         val task = FirebaseAuth.getInstance().signInWithCredential(credential)
         val result = task.await()
         return handleResult(task, result)

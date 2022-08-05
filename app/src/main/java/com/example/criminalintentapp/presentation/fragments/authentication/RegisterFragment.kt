@@ -46,7 +46,7 @@ class RegisterFragment : Fragment() {
         }
 
         authenticationViewModel.failureLiveData.observe(viewLifecycleOwner) { message ->
-            progressDialog.hideProgressDialog()
+            progressDialog.hide()
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG)
                 .show()
         }
@@ -67,7 +67,7 @@ class RegisterFragment : Fragment() {
         val password = binding.etSignUpPassword.text.toString()
 
         if (authenticationViewModel.checkFields(email, password)) {
-            progressDialog.showProgressDialog()
+            progressDialog.show()
             authenticationViewModel.register(email, password)
         } else {
             Toast.makeText(requireContext(), getString(R.string.empty_fields), Toast.LENGTH_LONG)
@@ -76,7 +76,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun goToCrimeList() {
-        progressDialog.hideProgressDialog()
+        progressDialog.hide()
         NavHostFragment.findNavController(this)
             .navigate(R.id.action_registerFragment_to_crimeListFragment)
     }

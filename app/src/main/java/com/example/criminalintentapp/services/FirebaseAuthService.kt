@@ -9,5 +9,5 @@ interface FirebaseAuthService {
 
     suspend fun register(email: String, password: String): Result<Exception, FirebaseUser>
 
-    suspend fun facebookAndGoogle(credential: AuthCredential): Result<Exception, FirebaseUser>
+    suspend fun singInWithFacebookOrGoogle(credential: AuthCredential): Result<Exception, FirebaseUser>
 }

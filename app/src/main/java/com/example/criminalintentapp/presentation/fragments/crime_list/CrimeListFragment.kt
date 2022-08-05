@@ -63,20 +63,20 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.new_crime -> {
-                progressDialog.showProgressDialog()
+                progressDialog.show()
                 val crime = Crime()
                 bundle.putInt(ARG_CRIME_ID, crime.id)
-                progressDialog.hideProgressDialog()
+                progressDialog.hide()
                 NavHostFragment.findNavController(this@CrimeListFragment)
                     .navigate(R.id.action_crimeListFragment_to_crimeFragment, bundle)
                 true
             }
 
             R.id.logout -> {
-                progressDialog.showProgressDialog()
+                progressDialog.show()
                 FirebaseAuth.getInstance().signOut()
                 LoginManager.getInstance().logOut()
-                progressDialog.hideProgressDialog()
+                progressDialog.hide()
                 NavHostFragment.findNavController(this@CrimeListFragment)
                     .navigate(R.id.action_crimeListFragment_to_loginFragment)
                 true
@@ -92,9 +92,9 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         binding.crimeRecyclerView.adapter = adapter
         adapter.setOnClickListener(object : CrimeAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
-                progressDialog.showProgressDialog()
+                progressDialog.show()
                 bundle.putInt(ARG_CRIME_ID, crimes[position].id)
-                progressDialog.hideProgressDialog()
+                progressDialog.hide()
                 NavHostFragment.findNavController(this@CrimeListFragment)
                     .navigate(R.id.action_crimeListFragment_to_crimeFragment, bundle)
             }

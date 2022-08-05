@@ -54,13 +54,21 @@ class LoginFragment : Fragment() {
             goToCrimeList()
         }
 
-        googleLogin()
-
+        setupGoogleLogin()
         initViewModelObservers()
         setOnClickListeners()
     }
 
-    private fun googleLogin() {
+    private fun setupFacebookLogin() {
+        binding.btnFacebook.setReadPermissions("email", "public_profile", "user_friends")
+        binding.btnFacebook.registerCallback(
+            authenticationViewModel.callbackManager,
+            authenticationViewModel.facebookLogin()
+        )
+
+    }
+
+    private fun setupGoogleLogin() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -68,7 +76,7 @@ class LoginFragment : Fragment() {
         googleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
     }
 
-    private fun signIn() {
+    private fun signInWithGoogle() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
 
@@ -82,7 +90,7 @@ class LoginFragment : Fragment() {
         }
 
         authenticationViewModel.failureLiveData.observe(viewLifecycleOwner) { message ->
-            progressDialog.hideProgressDialog()
+            progressDialog.hide()
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG)
                 .show()
         }
@@ -99,11 +107,11 @@ class LoginFragment : Fragment() {
         }
 
         binding.btnFacebook.setOnClickListener {
-            authenticationViewModel.facebookLogin(binding.btnFacebook)
+            setupFacebookLogin()
         }
 
         binding.btnGoogle.setOnClickListener {
-            signIn()
+            signInWithGoogle()
         }
     }
 
@@ -112,7 +120,7 @@ class LoginFragment : Fragment() {
         val password = binding.etSignInPassword.text.toString()
 
         if (authenticationViewModel.checkFields(email, password)) {
-            progressDialog.showProgressDialog()
+            progressDialog.show()
             authenticationViewModel.login(email, password)
         } else {
             Toast.makeText(requireContext(), getString(R.string.empty_fields), Toast.LENGTH_LONG)
@@ -121,7 +129,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun goToCrimeList() {
-        progressDialog.hideProgressDialog()
+        progressDialog.hide()
         NavHostFragment.findNavController(this)
             .navigate(R.id.action_loginFragment_to_crimeListFragment)
     }

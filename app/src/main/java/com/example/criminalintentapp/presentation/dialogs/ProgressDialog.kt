@@ -12,11 +12,11 @@ class ProgressDialog(activity: Activity) {
         setCanceledOnTouchOutside(false)
     }
 
-    fun showProgressDialog() {
+    fun show() {
         progressDialog.show()
     }
 
-    fun hideProgressDialog() {
+    fun hide() {
         progressDialog.dismiss()
     }
 }

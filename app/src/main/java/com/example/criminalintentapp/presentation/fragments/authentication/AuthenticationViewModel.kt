@@ -24,7 +24,7 @@ class AuthenticationViewModel(val authService: FirebaseAuthService) : ViewModel(
     var userLoginLiveData = MutableLiveData<FirebaseUser>()
     var failureLiveData = MutableLiveData<String>()
     val currentUser = FirebaseAuth.getInstance().currentUser
-    var callbackManager: CallbackManager= CallbackManager.Factory.create()
+    var callbackManager: CallbackManager = CallbackManager.Factory.create()
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
@@ -49,14 +49,13 @@ class AuthenticationViewModel(val authService: FirebaseAuthService) : ViewModel(
         }
     }
 
-    fun facebookLogin(btnFacebook: com.facebook.login.widget.LoginButton) {
-        btnFacebook.setReadPermissions("email", "public_profile", "user_friends")
-        btnFacebook.registerCallback(callbackManager, object :
+    fun facebookLogin(): FacebookCallback<LoginResult> {
+       return object :
             FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult) {
                 Log.d(LoginFragment.TAG, "facebook:onSuccess:$result")
                 val credential =
-                    FacebookAuthProvider.getCredential((result.accessToken as AccessToken).token)
+                    FacebookAuthProvider.getCredential((result.accessToken).token)
                 handleLoginAccessToken(credential)
             }
 
@@ -67,7 +66,7 @@ class AuthenticationViewModel(val authService: FirebaseAuthService) : ViewModel(
             override fun onError(error: FacebookException) {
                 Log.d(LoginFragment.TAG, "facebook:onError", error)
             }
-        })
+        }
     }
 
     fun googleLogin(data: Intent?) {
@@ -88,7 +87,7 @@ class AuthenticationViewModel(val authService: FirebaseAuthService) : ViewModel(
 
     fun handleLoginAccessToken(credential: AuthCredential) {
         viewModelScope.launch {
-            authService.facebookAndGoogle(credential).onSuccess {
+            authService.singInWithFacebookOrGoogle(credential).onSuccess {
                 userLoginLiveData.value = it
 
             }.onFailure { exception ->

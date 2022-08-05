@@ -30,7 +30,7 @@ class LoginFragment : Fragment() {
 
         authenticationViewModel.callbackManager.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN) {
             authenticationViewModel.googleLogin(data)
         }
     }

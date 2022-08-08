@@ -1,25 +1,37 @@
 package com.example.criminalintentapp.services
 
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.tasks.await
 import com.example.criminalintentapp.utils.Result
+import com.google.firebase.auth.*
 
 class FirebaseAuthServiceImpl : FirebaseAuthService {
 
     override suspend fun login(email: String, password: String): Result<Exception, FirebaseUser> {
-        val task = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
-        val result = task.await()
-        return handleResult(task, result)
+        return try {
+            val task = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+            val result = task.await()
+            handleResult(task, result)
+        } catch (e: FirebaseAuthException) {
+            Result.Failure(e)
+        }
     }
 
     override suspend fun register(
         email: String,
         password: String
     ): Result<Exception, FirebaseUser> {
-        val task = FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+        return try {
+            val task = FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+            val result = task.await()
+            handleResult(task, result)
+        } catch (e: FirebaseAuthException) {
+            Result.Failure(e)
+        }
+    }
+
+    override suspend fun singInWithFacebookOrGoogle(credential: AuthCredential): Result<Exception, FirebaseUser> {
+        val task = FirebaseAuth.getInstance().signInWithCredential(credential)
         val result = task.await()
         return handleResult(task, result)
     }

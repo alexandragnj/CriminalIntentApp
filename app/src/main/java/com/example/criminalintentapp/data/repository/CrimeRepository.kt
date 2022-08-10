@@ -31,12 +31,6 @@ class CrimeRepository(private val crimeDao: CrimeDao) {
         }
     }
 
-   /* fun deleteCrime(crime: Crime) {
-        executor.execute {
-            crimeDao.deleteCrime(crime)
-        }
-    }*/
-
     companion object {
         const val DATABASE_NAME = "crime-database"
     }

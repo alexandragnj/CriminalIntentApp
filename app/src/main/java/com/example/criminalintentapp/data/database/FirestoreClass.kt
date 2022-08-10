@@ -1,6 +1,7 @@
 package com.example.criminalintentapp.data.database
 
 import android.util.Log
+import com.example.criminalintentapp.data.repository.CrimeRepository
 import com.example.criminalintentapp.models.User
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -45,14 +46,15 @@ class FirestoreClass {
             }
     }
 
-    fun getCrimes() {
+    fun getCrimes(crimeRepository: CrimeRepository) {
         firestore.collection("crimes").get()
             .addOnSuccessListener { snapshot ->
                 if (!snapshot.isEmpty) {
                     for (data in snapshot.documents) {
                         val crime: Crime? = data.toObject(Crime::class.java)
                         if (crime != null) {
-                            Log.d(TAG,"read data: $crime")
+                            Log.d(TAG, "read data: $crime")
+                            addCrime(crime, crimeRepository)
                         }
                     }
 
@@ -63,6 +65,10 @@ class FirestoreClass {
                 Log.d("Firestore", "Show crimes failed")
             }
 
+    }
+
+    private fun addCrime(crime: Crime, crimeRepository: CrimeRepository){
+        crimeRepository.addCrime(crime)
     }
 
     companion object {

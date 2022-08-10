@@ -15,12 +15,9 @@ interface CrimeDao {
     @Update
     fun updateCrime(crime: Crime)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun addCrime(crime: Crime)
 
     @Query("DELETE FROM crime WHERE id = (:id)")
     fun deleteCrime(id: Long)
-
-    /* @Delete
-     fun deleteCrime(crime: Crime)*/
 }

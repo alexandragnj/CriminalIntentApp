@@ -5,6 +5,7 @@ import com.example.criminalintentapp.data.repository.CrimeRepository
 import com.example.criminalintentapp.models.User
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import java.util.HashMap
 
 class FirestoreClass {
 
@@ -15,10 +16,10 @@ class FirestoreClass {
             .document(user.id)
             .set(user, SetOptions.merge())
             .addOnCompleteListener {
-                Log.d("Firestore", "User saved success")
+                Log.d(TAG, "User saved success")
             }
             .addOnFailureListener {
-                Log.d("Firestore", "User saved failed")
+                Log.d(TAG, "User saved failed")
             }
     }
 
@@ -27,10 +28,10 @@ class FirestoreClass {
             .document(crime.id.toString())
             .set(crime, SetOptions.merge())
             .addOnCompleteListener {
-                Log.d("Firestore", "Crime saved success")
+                Log.d(TAG, "Crime saved success")
             }
             .addOnFailureListener {
-                Log.d("Firestore", "Crime saved failed")
+                Log.d(TAG, "Crime saved failed")
             }
     }
 
@@ -39,10 +40,10 @@ class FirestoreClass {
             .document(crime.id.toString())
             .delete()
             .addOnSuccessListener {
-                Log.d("Firestore", "Detelted success")
+                Log.d(TAG, "Detelted success")
             }
             .addOnFailureListener {
-                Log.d("Firestore", "Detelted failed")
+                Log.d(TAG, "Detelted failed")
             }
     }
 
@@ -58,16 +59,26 @@ class FirestoreClass {
                         }
                     }
 
-                    Log.d("Firestore", "Show crimes success")
+                    Log.d(TAG, "Show crimes success")
                 }
             }
             .addOnFailureListener {
-                Log.d("Firestore", "Show crimes failed")
+                Log.d(TAG, "Show crimes failed")
             }
 
     }
 
-    private fun addCrime(crime: Crime, crimeRepository: CrimeRepository){
+    fun updateCrime(crime: Crime, crimeHashMap: HashMap<String, Any>) {
+        firestore.collection("crimes").document(crime.id.toString()).update(crimeHashMap)
+            .addOnSuccessListener {
+                Log.d(TAG, "Update crimes success")
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "Update crimes failed")
+            }
+    }
+
+    private fun addCrime(crime: Crime, crimeRepository: CrimeRepository) {
         crimeRepository.addCrime(crime)
     }
 

@@ -185,23 +185,16 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
 
             if (crimeDetailViewModel.crimeLiveData.value == null) {
                 crimeDetailViewModel.addCrime(crimeDetailViewModel.crime)
-               /* val crime = com.example.criminalintentapp.data.database.Crime(
-                    crimeDetailViewModel.crime.id,
-                    binding.crimeTitle.text.toString(),
-                    crimeDetailViewModel.crime.date,
-                    crimeDetailViewModel.crime.time,
-                    crimeDetailViewModel.crime.isSolved,
-                    binding.crimeSuspect.text.toString(),
-                    crimeDetailViewModel.crime.photoFileName
-                )*/
                 FirestoreClass().saveCrime(crimeDetailViewModel.crime)
 
-                Log.d(TAG,"Id: ${crimeDetailViewModel.crime.id}")
+                Log.d(TAG, "Id: ${crimeDetailViewModel.crime.id}")
 
                 NavHostFragment.findNavController(this@CrimeFragment)
                     .navigate(R.id.action_crimeFragment_to_crimeListFragment)
             } else {
                 crimeDetailViewModel.saveCrime(crimeDetailViewModel.crime)
+                updateFirestore()
+
                 NavHostFragment.findNavController(this@CrimeFragment)
                     .navigate(R.id.action_crimeFragment_to_crimeListFragment)
             }
@@ -250,6 +243,23 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             )
             updatePhotoView(temporaryFile)
         }
+    }
+
+    private fun updateFirestore(){
+        val crimeHashMap = HashMap<String, Any>()
+
+        when {
+            binding.crimeTitle.text.toString() != crimeDetailViewModel.crime.title -> crimeHashMap["title"] =
+                binding.crimeTitle.text.toString()
+            binding.crimeDate.text.toString() != crimeDetailViewModel.crime.date -> crimeHashMap["date"] =
+                binding.crimeDate.text.toString()
+            binding.crimeTime.text.toString() != crimeDetailViewModel.crime.time -> crimeHashMap["time"] =
+                binding.crimeTime.text.toString()
+            binding.crimeSuspect.text.toString() != crimeDetailViewModel.crime.suspect -> crimeHashMap["suspect"] =
+                binding.crimeSuspect.text.toString()
+        }
+
+        FirestoreClass().updateCrime(crimeDetailViewModel.crime, crimeHashMap)
     }
 
     private fun updateUI() {

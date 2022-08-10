@@ -44,8 +44,7 @@ class RegisterFragment : Fragment() {
         authenticationViewModel.userRegisterLiveData.observe(viewLifecycleOwner) { user ->
             user?.let { firebaseUser ->
                 goToCrimeList()
-                val user = User(firebaseUser.uid, binding.etSignUpEmail.text.toString())
-                FirestoreClass().saveUser(user  )
+                FirestoreClass().saveUser(User(firebaseUser.uid, binding.etSignUpEmail.text.toString()))
             }
         }
 

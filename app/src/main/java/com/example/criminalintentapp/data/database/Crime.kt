@@ -6,7 +6,6 @@ import com.google.android.gms.common.util.Clock
 
 @Entity
 data class Crime(
-    //  @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @PrimaryKey
     val id: Long = System.currentTimeMillis(),
     var title: String = "",

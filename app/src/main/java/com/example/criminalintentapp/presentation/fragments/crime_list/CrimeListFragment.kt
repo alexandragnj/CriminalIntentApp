@@ -10,7 +10,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.data.database.Crime
-import com.example.criminalintentapp.data.database.FirestoreClass
 import com.example.criminalintentapp.databinding.FragmentCrimeListBinding
 import com.example.criminalintentapp.presentation.dialogs.ProgressDialog
 import com.facebook.login.LoginManager
@@ -23,7 +22,6 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
     private lateinit var adapter: CrimeAdapter
     private var bundle = Bundle()
     private lateinit var progressDialog: ProgressDialog
-    private lateinit var crimeList: ArrayList<Crime>
 
     private val crimeListViewModel: CrimeListViewModel by viewModel()
 
@@ -47,8 +45,6 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         (requireActivity() as AppCompatActivity).supportActionBar?.show()
 
         progressDialog = ProgressDialog(requireActivity())
-
-        //FirestoreClass().getCrimes()
 
         val syncWithCloud: Boolean?= arguments?.getBoolean(ARG_SYNC_CLOUD)
         Log.d(TAG,"SYNC: $syncWithCloud")

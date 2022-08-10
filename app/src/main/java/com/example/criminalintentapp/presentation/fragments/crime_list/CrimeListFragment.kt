@@ -10,6 +10,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.data.database.Crime
+import com.example.criminalintentapp.data.database.FirestoreClass
 import com.example.criminalintentapp.databinding.FragmentCrimeListBinding
 import com.example.criminalintentapp.presentation.dialogs.ProgressDialog
 import com.facebook.login.LoginManager
@@ -19,9 +20,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
 
     private lateinit var binding: FragmentCrimeListBinding
-    private var adapter: CrimeAdapter = CrimeAdapter(emptyList())
+    private lateinit var adapter: CrimeAdapter
     private var bundle = Bundle()
     private lateinit var progressDialog: ProgressDialog
+    private lateinit var crimeList: ArrayList<Crime>
 
     private val crimeListViewModel: CrimeListViewModel by viewModel()
 
@@ -46,12 +48,23 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
 
         progressDialog = ProgressDialog(requireActivity())
 
+        //FirestoreClass().getCrimes()
+
+        val syncWithCloud: Boolean?= arguments?.getBoolean(ARG_SYNC_CLOUD)
+        Log.d(TAG,"SYNC: $syncWithCloud")
+        if(syncWithCloud == true){
+            progressDialog.show()
+            Log.d(TAG,"syncWithCloud")
+            crimeListViewModel.syncWithCloud()
+            progressDialog.hide()
+        }
+
         crimeListViewModel.crimesListLiveData.observe(
             viewLifecycleOwner
         ) { crimes ->
             binding.emptyListTextView.isVisible = crimes.isEmpty()
             Log.i(TAG, "Got crimes ${crimes.size}")
-            setupUI(crimes)
+            setupUI(crimes as ArrayList<Crime>)
         }
     }
 
@@ -65,7 +78,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
             R.id.new_crime -> {
                 progressDialog.show()
                 val crime = Crime()
-                bundle.putInt(ARG_CRIME_ID, crime.id)
+                bundle.putLong(ARG_CRIME_ID, crime.id)
                 progressDialog.hide()
                 NavHostFragment.findNavController(this@CrimeListFragment)
                     .navigate(R.id.action_crimeListFragment_to_crimeFragment, bundle)
@@ -85,7 +98,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         }
     }
 
-    private fun setupUI(crimes: List<Crime>) {
+    private fun setupUI(crimes: ArrayList<Crime>) {
         binding.crimeRecyclerView.layoutManager = LinearLayoutManager(context)
 
         adapter = CrimeAdapter(crimes)
@@ -93,7 +106,7 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
         adapter.setOnClickListener(object : CrimeAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
                 progressDialog.show()
-                bundle.putInt(ARG_CRIME_ID, crimes[position].id)
+                bundle.putLong(ARG_CRIME_ID, crimes[position].id)
                 progressDialog.hide()
                 NavHostFragment.findNavController(this@CrimeListFragment)
                     .navigate(R.id.action_crimeListFragment_to_crimeFragment, bundle)
@@ -104,5 +117,6 @@ class CrimeListFragment : Fragment(R.layout.fragment_crime_list) {
     companion object {
         private const val TAG = "CrimeListFragment"
         private const val ARG_CRIME_ID = "crime_id"
+        private const val ARG_SYNC_CLOUD = "sync_cloud"
     }
 }

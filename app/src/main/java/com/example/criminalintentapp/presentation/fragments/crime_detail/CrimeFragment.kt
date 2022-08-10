@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.navigation.fragment.NavHostFragment
 import com.example.criminalintentapp.R
+import com.example.criminalintentapp.data.database.FirestoreClass
 import com.example.criminalintentapp.databinding.FragmentCrimeBinding
 import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment
 import com.example.criminalintentapp.presentation.dialogs.TimePickerFragment
@@ -105,10 +106,11 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
 
         setClickListeners()
 
-        val crimeId: Int = arguments?.getSerializable(ARG_CRIME_ID) as Int
+        val crimeId: Long = arguments?.getSerializable(ARG_CRIME_ID) as Long
         crimeDetailViewModel.loadCrime(crimeId)
 
         Log.d(TAG, "onViewCreated")
+        Log.d(TAG, "Id cretE: ${crimeId}")
     }
 
     override fun onFragmentResult(requestCode: String, result: Bundle) {
@@ -183,16 +185,35 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
 
             if (crimeDetailViewModel.crimeLiveData.value == null) {
                 crimeDetailViewModel.addCrime(crimeDetailViewModel.crime)
-                //activity?.supportFragmentManager?.popBackStack()
+               /* val crime = com.example.criminalintentapp.data.database.Crime(
+                    crimeDetailViewModel.crime.id,
+                    binding.crimeTitle.text.toString(),
+                    crimeDetailViewModel.crime.date,
+                    crimeDetailViewModel.crime.time,
+                    crimeDetailViewModel.crime.isSolved,
+                    binding.crimeSuspect.text.toString(),
+                    crimeDetailViewModel.crime.photoFileName
+                )*/
+                FirestoreClass().saveCrime(crimeDetailViewModel.crime)
+
+                Log.d(TAG,"Id: ${crimeDetailViewModel.crime.id}")
+
                 NavHostFragment.findNavController(this@CrimeFragment)
                     .navigate(R.id.action_crimeFragment_to_crimeListFragment)
             } else {
                 crimeDetailViewModel.saveCrime(crimeDetailViewModel.crime)
-                //activity?.supportFragmentManager?.popBackStack()
                 NavHostFragment.findNavController(this@CrimeFragment)
                     .navigate(R.id.action_crimeFragment_to_crimeListFragment)
             }
             Log.d(TAG, "suspect: ${crimeDetailViewModel.crime.suspect}")
+        }
+
+        binding.crimeDelete.setOnClickListener {
+            val crimeId: Long = arguments?.getSerializable(ARG_CRIME_ID) as Long
+            crimeDetailViewModel.deleteCrime(crimeId)
+            FirestoreClass().deleteCrime(crimeDetailViewModel.crime)
+            NavHostFragment.findNavController(this@CrimeFragment)
+                .navigate(R.id.action_crimeFragment_to_crimeListFragment)
         }
 
         binding.crimeReport.setOnClickListener {

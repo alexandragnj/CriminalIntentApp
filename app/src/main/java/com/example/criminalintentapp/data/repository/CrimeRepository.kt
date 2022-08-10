@@ -11,7 +11,13 @@ class CrimeRepository(private val crimeDao: CrimeDao) {
 
     fun getCrimes(): LiveData<List<Crime>> = crimeDao.getCrimes()
 
-    fun getCrime(id: Int): LiveData<Crime?> = crimeDao.getCrime(id)
+    fun getCrime(id: Long): LiveData<Crime?> = crimeDao.getCrime(id)
+
+    fun deleteCrime(id: Long) {
+        executor.execute {
+            crimeDao.deleteCrime(id)
+        }
+    }
 
     fun updateCrime(crime: Crime) {
         executor.execute {
@@ -24,6 +30,12 @@ class CrimeRepository(private val crimeDao: CrimeDao) {
             crimeDao.addCrime(crime)
         }
     }
+
+   /* fun deleteCrime(crime: Crime) {
+        executor.execute {
+            crimeDao.deleteCrime(crime)
+        }
+    }*/
 
     companion object {
         const val DATABASE_NAME = "crime-database"

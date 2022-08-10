@@ -2,11 +2,13 @@ package com.example.criminalintentapp.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.android.gms.common.util.Clock
 
 @Entity
 data class Crime(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-
+    //  @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey
+    val id: Long = System.currentTimeMillis(),
     var title: String = "",
     var date: String = "",
     var time: String = "",

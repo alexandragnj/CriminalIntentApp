@@ -41,5 +41,6 @@
     <string name="facebook_client_token">5de2cf361345b155e0ee9dbc1849236b</string>
     <string name="continue_with_google">Continue with Google</string>
     <string name="loading">Loading...</string>
+    <string name="delete">Delete</string>
 
 </resources>

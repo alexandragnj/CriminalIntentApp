@@ -9,7 +9,7 @@ import com.example.criminalintentapp.data.repository.CrimeRepository
 
 class CrimeDetailViewModel(private val crimeRepository: CrimeRepository) : ViewModel() {
 
-    private val crimeIdLiveData = MutableLiveData<Int>()
+    private val crimeIdLiveData = MutableLiveData<Long>()
     var crime = Crime()
 
     val crimeLiveData: LiveData<Crime?> =
@@ -17,8 +17,13 @@ class CrimeDetailViewModel(private val crimeRepository: CrimeRepository) : ViewM
             crimeRepository.getCrime(crimeId)
         }
 
-    fun loadCrime(crimeId: Int) {
+    fun loadCrime(crimeId: Long) {
+        crimeIdLiveData.value= crimeId
+    }
+
+    fun deleteCrime(crimeId: Long) {
         crimeIdLiveData.value = crimeId
+        crimeRepository.deleteCrime(crimeId)
     }
 
     fun saveCrime(crime: Crime) {
@@ -28,4 +33,8 @@ class CrimeDetailViewModel(private val crimeRepository: CrimeRepository) : ViewM
     fun addCrime(crime: Crime) {
         crimeRepository.addCrime(crime)
     }
+
+    /*fun deleteCrime(crime: Crime){
+        crimeRepository.deleteCrime(crime)
+    }*/
 }

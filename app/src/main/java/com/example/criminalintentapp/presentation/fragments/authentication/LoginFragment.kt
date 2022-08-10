@@ -2,6 +2,7 @@ package com.example.criminalintentapp.presentation.fragments.authentication
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,7 @@ class LoginFragment : Fragment() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private val authenticationViewModel: AuthenticationViewModel by viewModel()
     private lateinit var progressDialog: ProgressDialog
+    private var bundle = Bundle()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -51,7 +53,7 @@ class LoginFragment : Fragment() {
         progressDialog = ProgressDialog(requireActivity())
 
         if (authenticationViewModel.currentUser != null) {
-            goToCrimeList()
+            goToCrimeList(false)
         }
 
         setupGoogleLogin()
@@ -85,7 +87,7 @@ class LoginFragment : Fragment() {
     private fun initViewModelObservers() {
         authenticationViewModel.userLoginLiveData.observe(viewLifecycleOwner) { user ->
             user?.let {
-                goToCrimeList()
+                goToCrimeList(true)
             }
         }
 
@@ -128,14 +130,18 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun goToCrimeList() {
+    private fun goToCrimeList(syncWithCloud: Boolean) {
         progressDialog.hide()
+        bundle.putBoolean(ARG_SYNC_CLOUD, syncWithCloud)
+        Log.d(TAG,"sync: $syncWithCloud")
         NavHostFragment.findNavController(this)
-            .navigate(R.id.action_loginFragment_to_crimeListFragment)
+            .navigate(R.id.action_loginFragment_to_crimeListFragment, bundle)
+
     }
 
     companion object {
         const val TAG = "LoginFragment"
         private const val REQUEST_CODE_GOOGLE_SIGN_IN = 120
+        private const val ARG_SYNC_CLOUD = "sync_cloud"
     }
 }

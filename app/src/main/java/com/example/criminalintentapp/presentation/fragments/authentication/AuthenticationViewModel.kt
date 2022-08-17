@@ -5,7 +5,9 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.criminalintentapp.models.User
 import com.example.criminalintentapp.services.FirebaseAuthService
+import com.example.criminalintentapp.services.FirestoreService
 import com.example.criminalintentapp.utils.onFailure
 import com.example.criminalintentapp.utils.onSuccess
 import com.facebook.AccessToken
@@ -18,7 +20,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.*
 import kotlinx.coroutines.launch
 
-class AuthenticationViewModel(val authService: FirebaseAuthService) : ViewModel() {
+class AuthenticationViewModel(val authService: FirebaseAuthService, val firestoreService: FirestoreService) : ViewModel() {
 
     var userRegisterLiveData = MutableLiveData<FirebaseUser>()
     var userLoginLiveData = MutableLiveData<FirebaseUser>()
@@ -42,6 +44,9 @@ class AuthenticationViewModel(val authService: FirebaseAuthService) : ViewModel(
         viewModelScope.launch {
             authService.register(email, password).onSuccess { user ->
                 userRegisterLiveData.value = user
+                viewModelScope.launch{
+                    firestoreService.saveUser(User(user.uid, email))
+                }
             }.onFailure { exception ->
                 if (exception is FirebaseAuthUserCollisionException)
                     failureLiveData.value = "This email is already in use. Please login."

@@ -9,9 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import com.example.criminalintentapp.R
-import com.example.criminalintentapp.data.database.FirestoreClass
 import com.example.criminalintentapp.databinding.FragmentRegisterBinding
-import com.example.criminalintentapp.models.User
 import com.example.criminalintentapp.presentation.dialogs.ProgressDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -44,7 +42,6 @@ class RegisterFragment : Fragment() {
         authenticationViewModel.userRegisterLiveData.observe(viewLifecycleOwner) { user ->
             user?.let { firebaseUser ->
                 goToCrimeList()
-                FirestoreClass().saveUser(User(firebaseUser.uid, binding.etSignUpEmail.text.toString()))
             }
         }
 

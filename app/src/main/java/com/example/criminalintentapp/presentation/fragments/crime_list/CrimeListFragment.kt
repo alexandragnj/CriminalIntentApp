@@ -12,6 +12,7 @@ import com.example.criminalintentapp.R
 import com.example.criminalintentapp.data.database.Crime
 import com.example.criminalintentapp.databinding.FragmentCrimeListBinding
 import com.example.criminalintentapp.presentation.dialogs.ProgressDialog
+import com.example.criminalintentapp.utils.Paths
 import com.facebook.login.LoginManager
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.androidx.viewmodel.ext.android.viewModel

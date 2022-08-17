@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import com.example.criminalintentapp.R
@@ -25,7 +26,6 @@ class LoginFragment : Fragment() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private val authenticationViewModel: AuthenticationViewModel by viewModel()
     private lateinit var progressDialog: ProgressDialog
-    private var bundle = Bundle()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -132,7 +132,8 @@ class LoginFragment : Fragment() {
 
     private fun goToCrimeList(syncWithCloud: Boolean) {
         progressDialog.hide()
-        bundle.putBoolean(ARG_SYNC_CLOUD, syncWithCloud)
+        var bundle= bundleOf(ARG_SYNC_CLOUD to syncWithCloud)
+        //bundle.putBoolean(ARG_SYNC_CLOUD, syncWithCloud)
         Log.d(TAG,"sync: $syncWithCloud")
         NavHostFragment.findNavController(this)
             .navigate(R.id.action_loginFragment_to_crimeListFragment, bundle)

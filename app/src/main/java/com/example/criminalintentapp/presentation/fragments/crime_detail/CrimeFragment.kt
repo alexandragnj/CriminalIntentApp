@@ -25,7 +25,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.navigation.fragment.NavHostFragment
 import com.example.criminalintentapp.R
-import com.example.criminalintentapp.data.database.FirestoreClass
 import com.example.criminalintentapp.databinding.FragmentCrimeBinding
 import com.example.criminalintentapp.presentation.dialogs.DatePickerFragment
 import com.example.criminalintentapp.presentation.dialogs.TimePickerFragment
@@ -183,28 +182,24 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                 )
             )
 
-            if (crimeDetailViewModel.crimeLiveData.value == null) {
-                crimeDetailViewModel.addCrime(crimeDetailViewModel.crime)
-                FirestoreClass().saveCrime(crimeDetailViewModel.crime)
-
-                Log.d(TAG, "Id: ${crimeDetailViewModel.crime.id}")
-
+            if (crimeDetailViewModel.createOrModifyCrime()) {
                 NavHostFragment.findNavController(this@CrimeFragment)
                     .navigate(R.id.action_crimeFragment_to_crimeListFragment)
             } else {
-                crimeDetailViewModel.saveCrime(crimeDetailViewModel.crime)
                 updateFirestore()
 
                 NavHostFragment.findNavController(this@CrimeFragment)
                     .navigate(R.id.action_crimeFragment_to_crimeListFragment)
             }
+
             Log.d(TAG, "suspect: ${crimeDetailViewModel.crime.suspect}")
         }
 
         binding.crimeDelete.setOnClickListener {
             val crimeId: Long = arguments?.getSerializable(ARG_CRIME_ID) as Long
             crimeDetailViewModel.deleteCrime(crimeId)
-            FirestoreClass().deleteCrime(crimeDetailViewModel.crime)
+            //FirestoreClass().deleteCrime(crimeDetailViewModel.crime)
+            crimeDetailViewModel.deleteFirestore()
             NavHostFragment.findNavController(this@CrimeFragment)
                 .navigate(R.id.action_crimeFragment_to_crimeListFragment)
         }
@@ -245,7 +240,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
         }
     }
 
-    private fun updateFirestore(){
+    private fun updateFirestore() {
         val crimeHashMap = HashMap<String, Any>()
 
         when {
@@ -259,7 +254,7 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                 binding.crimeSuspect.text.toString()
         }
 
-        FirestoreClass().updateCrime(crimeDetailViewModel.crime, crimeHashMap)
+        crimeDetailViewModel.updateFirestore(crimeHashMap)
     }
 
     private fun updateUI() {

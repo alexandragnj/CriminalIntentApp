@@ -1,13 +1,19 @@
 package com.example.criminalintentapp.presentation.fragments.crime_detail
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import android.util.Log
+import androidx.lifecycle.*
+import androidx.navigation.fragment.NavHostFragment
+import com.example.criminalintentapp.R
 import com.example.criminalintentapp.data.database.Crime
+import com.example.criminalintentapp.data.database.FirestoreClass
 import com.example.criminalintentapp.data.repository.CrimeRepository
+import com.example.criminalintentapp.services.FirestoreService
+import kotlinx.coroutines.launch
 
-class CrimeDetailViewModel(private val crimeRepository: CrimeRepository) : ViewModel() {
+class CrimeDetailViewModel(
+    private val crimeRepository: CrimeRepository,
+    val firestoreService: FirestoreService
+) : ViewModel() {
 
     private val crimeIdLiveData = MutableLiveData<Long>()
     var crime = Crime()
@@ -18,7 +24,7 @@ class CrimeDetailViewModel(private val crimeRepository: CrimeRepository) : ViewM
         }
 
     fun loadCrime(crimeId: Long) {
-        crimeIdLiveData.value= crimeId
+        crimeIdLiveData.value = crimeId
     }
 
     fun deleteCrime(crimeId: Long) {
@@ -32,5 +38,32 @@ class CrimeDetailViewModel(private val crimeRepository: CrimeRepository) : ViewM
 
     fun addCrime(crime: Crime) {
         crimeRepository.addCrime(crime)
+    }
+
+    fun createOrModifyCrime(): Boolean {
+        if (crimeLiveData.value == null) {
+            addCrime(crime)
+            viewModelScope.launch {
+                firestoreService.saveCrime(crime)
+            }
+
+            return true
+        } else {
+            saveCrime(crime)
+
+            return false
+        }
+    }
+
+    fun updateFirestore(crimeHashMap: HashMap<String, Any>) {
+        viewModelScope.launch {
+            firestoreService.updateCrime(crime, crimeHashMap)
+        }
+    }
+
+    fun deleteFirestore(){
+        viewModelScope.launch {
+            firestoreService.deleteCrime(crime)
+        }
     }
 }

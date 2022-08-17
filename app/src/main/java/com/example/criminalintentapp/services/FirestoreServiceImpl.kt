@@ -1,20 +1,20 @@
-package com.example.criminalintentapp.data.database
+package com.example.criminalintentapp.services
 
 import android.util.Log
+import com.example.criminalintentapp.data.database.Crime
 import com.example.criminalintentapp.data.repository.CrimeRepository
 import com.example.criminalintentapp.models.User
 import com.example.criminalintentapp.utils.Paths
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import java.util.HashMap
 
-class FirestoreClass {
+class FirestoreServiceImpl: FirestoreService {
 
     private val firestore = FirebaseFirestore.getInstance()
     private val users = Paths.users.name
     private val crimes = Paths.crimes.name
 
-    fun saveUser(user: User) {
+    override suspend fun saveUser(user: User) {
         firestore.collection(users)
             .document(user.id)
             .set(user, SetOptions.merge())
@@ -26,7 +26,7 @@ class FirestoreClass {
             }
     }
 
-    fun saveCrime(crime: Crime) {
+    override suspend fun saveCrime(crime: Crime) {
         firestore.collection(crimes)
             .document(crime.id.toString())
             .set(crime, SetOptions.merge())
@@ -38,7 +38,7 @@ class FirestoreClass {
             }
     }
 
-    fun deleteCrime(crime: Crime) {
+    override suspend fun deleteCrime(crime: Crime) {
         firestore.collection(crimes)
             .document(crime.id.toString())
             .delete()
@@ -50,7 +50,7 @@ class FirestoreClass {
             }
     }
 
-    fun getCrimes(crimeRepository: CrimeRepository) {
+    override suspend fun getCrimes(crimeRepository: CrimeRepository) {
         firestore.collection(crimes).get()
             .addOnSuccessListener { snapshot ->
                 if (!snapshot.isEmpty) {
@@ -68,10 +68,9 @@ class FirestoreClass {
             .addOnFailureListener {
                 Log.d(TAG, "Show crimes failed")
             }
-
     }
 
-    fun updateCrime(crime: Crime, crimeHashMap: HashMap<String, Any>) {
+    override suspend fun updateCrime(crime: Crime, crimeHashMap: HashMap<String, Any>) {
         firestore.collection(crimes).document(crime.id.toString()).update(crimeHashMap)
             .addOnSuccessListener {
                 Log.d(TAG, "Update crimes success")
@@ -85,7 +84,7 @@ class FirestoreClass {
         crimeRepository.addCrime(crime)
     }
 
-    companion object {
-        private const val TAG = "FirestoreClass"
+    companion object{
+        private const val TAG="FirestoreService"
     }
 }

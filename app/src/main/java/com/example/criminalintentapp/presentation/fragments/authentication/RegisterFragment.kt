@@ -40,7 +40,7 @@ class RegisterFragment : Fragment() {
 
     private fun initViewModelObservers() {
         authenticationViewModel.userRegisterLiveData.observe(viewLifecycleOwner) { user ->
-            user?.let {
+            user?.let { firebaseUser ->
                 goToCrimeList()
             }
         }

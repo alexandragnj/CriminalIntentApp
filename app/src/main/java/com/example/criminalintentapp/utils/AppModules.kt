@@ -9,6 +9,8 @@ import com.example.criminalintentapp.presentation.fragments.crime_detail.CrimeDe
 import com.example.criminalintentapp.presentation.fragments.crime_list.CrimeListViewModel
 import com.example.criminalintentapp.services.FirebaseAuthService
 import com.example.criminalintentapp.services.FirebaseAuthServiceImpl
+import com.example.criminalintentapp.services.FirestoreService
+import com.example.criminalintentapp.services.FirestoreServiceImpl
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -16,10 +18,11 @@ import org.koin.dsl.module
 val appModule = module {
 
     single<FirebaseAuthService> { FirebaseAuthServiceImpl() }
+    single<FirestoreService> { FirestoreServiceImpl() }
 
-    viewModel { AuthenticationViewModel(authService = get()) }
-    viewModel { CrimeDetailViewModel(crimeRepository = get()) }
-    viewModel { CrimeListViewModel(crimeRepository = get()) }
+    viewModel { AuthenticationViewModel(authService = get(), firestoreService = get()) }
+    viewModel { CrimeDetailViewModel(crimeRepository = get(), firestoreService = get()) }
+    viewModel { CrimeListViewModel(crimeRepository = get(), firestoreService = get()) }
 }
 
 val appModuleDB = module {

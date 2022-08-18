@@ -105,10 +105,11 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
 
         setClickListeners()
 
-        val crimeId: Int = arguments?.getSerializable(ARG_CRIME_ID) as Int
+        val crimeId: Long = arguments?.getSerializable(ARG_CRIME_ID) as Long
         crimeDetailViewModel.loadCrime(crimeId)
 
         Log.d(TAG, "onViewCreated")
+        Log.d(TAG, "Id cretE: ${crimeId}")
     }
 
     override fun onFragmentResult(requestCode: String, result: Bundle) {
@@ -181,18 +182,26 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
                 )
             )
 
-            if (crimeDetailViewModel.crimeLiveData.value == null) {
-                crimeDetailViewModel.addCrime(crimeDetailViewModel.crime)
-                //activity?.supportFragmentManager?.popBackStack()
+            if (crimeDetailViewModel.createOrModifyCrime()) {
                 NavHostFragment.findNavController(this@CrimeFragment)
                     .navigate(R.id.action_crimeFragment_to_crimeListFragment)
             } else {
-                crimeDetailViewModel.saveCrime(crimeDetailViewModel.crime)
-                //activity?.supportFragmentManager?.popBackStack()
+                updateFirestore()
+
                 NavHostFragment.findNavController(this@CrimeFragment)
                     .navigate(R.id.action_crimeFragment_to_crimeListFragment)
             }
+
             Log.d(TAG, "suspect: ${crimeDetailViewModel.crime.suspect}")
+        }
+
+        binding.crimeDelete.setOnClickListener {
+            val crimeId: Long = arguments?.getSerializable(ARG_CRIME_ID) as Long
+            crimeDetailViewModel.deleteCrime(crimeId)
+            //FirestoreClass().deleteCrime(crimeDetailViewModel.crime)
+            crimeDetailViewModel.deleteFirestore()
+            NavHostFragment.findNavController(this@CrimeFragment)
+                .navigate(R.id.action_crimeFragment_to_crimeListFragment)
         }
 
         binding.crimeReport.setOnClickListener {
@@ -229,6 +238,23 @@ class CrimeFragment : Fragment(R.layout.fragment_crime), FragmentResultListener 
             )
             updatePhotoView(temporaryFile)
         }
+    }
+
+    private fun updateFirestore() {
+        val crimeHashMap = HashMap<String, Any>()
+
+        when {
+            binding.crimeTitle.text.toString() != crimeDetailViewModel.crime.title -> crimeHashMap["title"] =
+                binding.crimeTitle.text.toString()
+            binding.crimeDate.text.toString() != crimeDetailViewModel.crime.date -> crimeHashMap["date"] =
+                binding.crimeDate.text.toString()
+            binding.crimeTime.text.toString() != crimeDetailViewModel.crime.time -> crimeHashMap["time"] =
+                binding.crimeTime.text.toString()
+            binding.crimeSuspect.text.toString() != crimeDetailViewModel.crime.suspect -> crimeHashMap["suspect"] =
+                binding.crimeSuspect.text.toString()
+        }
+
+        crimeDetailViewModel.updateFirestore(crimeHashMap)
     }
 
     private fun updateUI() {

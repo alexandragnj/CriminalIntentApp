@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.criminalintentapp.R
 import com.example.criminalintentapp.data.database.Crime
 
-class CrimeAdapter(var crimes: List<Crime>) :
+class CrimeAdapter(var crimes: ArrayList<Crime>) :
     RecyclerView.Adapter<CrimeAdapter.CrimeHolder>() {
 
     private lateinit var listener: OnItemClickListener
